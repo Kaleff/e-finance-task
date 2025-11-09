@@ -20,6 +20,8 @@ return new class extends Migration
             $table->date('deadline')->nullable();
             $table->timestamps();
 
+            // Index for status-based project queries
+            $table->index('status');
             // Index for getting projects by owner and status
             $table->index(['owner_id', 'status']);
             // Index for deadline queries (finding projects due soon or overdue)
