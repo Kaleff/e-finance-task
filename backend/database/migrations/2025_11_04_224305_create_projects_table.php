@@ -19,6 +19,7 @@ return new class extends Migration
             $table->enum('status', ['planned', 'in_progress', 'completed', 'archived'])->default('planned');
             $table->date('deadline')->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
             // Index for status-based project queries
             $table->index('status');
