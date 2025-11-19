@@ -3,11 +3,11 @@
 namespace App\Services;
 
 use App\Models\Project;
-use App\Repositories\ProjectRepository;
+use Illuminate\Database\Eloquent\Collection;
 
 class ProjectService
 {
-    public function getProjects($filters = [], $page = 1)
+    public function getProjects($filters = [], $page = 1): Collection
     {
         $query = Project::query();
 
@@ -32,17 +32,17 @@ class ProjectService
         return $query->with('tasks')->get();
     }
 
-    public function getProjectById($id)
+    public function getProjectById($id): Project|null
     {
         return Project::with('tasks')->find($id);
     }
 
-    public function createProject(array $data)
+    public function createProject(array $data): Project
     {
         return Project::create($data);
     }
 
-    public function updateProject($id, array $data)
+    public function updateProject($id, array $data): Project|null
     {
         $project = Project::find($id);
         if ($project) {
@@ -52,7 +52,7 @@ class ProjectService
         return null;
     }
 
-    public function deleteProject($id)
+    public function deleteProject($id): bool
     {
         $project = Project::find($id);
         if ($project) {

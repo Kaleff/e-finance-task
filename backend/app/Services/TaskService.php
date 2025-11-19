@@ -4,10 +4,11 @@ namespace App\Services;
 
 use App\Models\Task;
 use App\Models\TaskComment;
+use Illuminate\Database\Eloquent\Collection;
 
 class TaskService
 {
-    public function getTasks($filters = [], $page = 1)
+    public function getTasks($filters = [], $page = 1): Collection
     {
         $query = Task::query();
 
@@ -32,17 +33,17 @@ class TaskService
         return $query->with('comments')->get();
     }
 
-    public function getTaskById($id)
+    public function getTaskById($id): Task|null
     {
         return Task::with('comments')->find($id);
     }
 
-    public function createTask(array $data)
+    public function createTask(array $data): Task
     {
         return Task::create($data);
     }
 
-    public function update($id, array $data)
+    public function update($id, array $data): Task|null
     {
         $task = Task::find($id);
         if ($task) {
@@ -52,7 +53,7 @@ class TaskService
         return null;
     }
 
-    public function delete($id)
+    public function delete($id): bool
     {
         $task = Task::find($id);
         if ($task) {
@@ -62,13 +63,13 @@ class TaskService
         return false;
     }
 
-    public function getTaskComments($taskId)
+    public function getTaskComments($taskId): Collection
     {
-        $comments = TaskComment::where('task_id', $taskId)->get();
-        return $comments;
+        return TaskComment::where('task_id', $taskId)->get();
+
     }
 
-    public function createTaskComment($taskId, $commentText, $userId)
+    public function createTaskComment($taskId, $commentText, $userId): TaskComment
     {
         $comment = TaskComment::create([
             'task_id' => $taskId,
@@ -78,13 +79,13 @@ class TaskService
         return $comment;
     }
 
-    public function updateTaskComment($commentId, $commentText, $userId)
+    public function updateTaskComment($commentId, $commentText, $userId): TaskComment|null
     {
         $comment = TaskComment::find($commentId);
         if ($comment && $comment->user_id == $userId) {
             $comment->update(['comment' => $commentText]);
-            return true;
+            return $comment->fresh();
         }
-        return false;
+        return null;
     }
 }
