@@ -28,3 +28,15 @@ backend/vendor
 # Frontend specific
 frontend/node_modules
 frontend/public/build
+
+# Frontend specific (Nuxt)
+frontend/.output
+frontend/.data
+frontend/.nuxt
+frontend/.nitro
+frontend/.cache
+frontend/dist
+frontend/node_modules
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
