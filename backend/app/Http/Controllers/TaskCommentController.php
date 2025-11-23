@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCommentRequest;
 use App\Http\Requests\UpdateCommentRequest;
 use App\Services\TaskService;
+use Illuminate\Support\Facades\Auth;
 
 class TaskCommentController extends Controller
 {
@@ -20,7 +21,7 @@ class TaskCommentController extends Controller
         $data = $request->validated();
         $taskId = $data['task_id'];
 
-        $comment = $this->taskService->createTaskComment($taskId, $data['comment'], auth()->id);
+        $comment = $this->taskService->createTaskComment($taskId, $data['comment'], Auth::id());
 
         return response()->json($comment, 201);
     }
@@ -29,7 +30,7 @@ class TaskCommentController extends Controller
     {
         $data = $request->validated();
 
-        $updated = $this->taskService->updateTaskComment($commentId, $data['comment'], auth()->id);
+        $updated = $this->taskService->updateTaskComment($commentId, $data['comment'], Auth::id());
 
         if ($updated) {
             return response()->json(['message' => 'Comment updated successfully']);
