@@ -15,4 +15,13 @@ class Task extends Model
     {
         return $this->hasMany(TaskComment::class);
     }
+
+    protected $fillable = [
+        'title',
+        'description',
+        'project_id',
+        'status',
+        'assigned_to',
+        'due_date',
+    ];
 }
