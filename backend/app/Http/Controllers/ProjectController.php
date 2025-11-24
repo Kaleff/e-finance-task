@@ -16,7 +16,8 @@ class ProjectController extends Controller
         $filters = $request->validated();
         $perPage = $filters['per_page'] ?? 10;
         unset($filters['per_page']); // Remove per_page from filters
-        
+        $filters['deadline_passed'] = isset($filters['deadline_passed']) ? filter_var($filters['deadline_passed'], FILTER_VALIDATE_BOOLEAN) : null;
+
         $projects = $this->projectService->getProjects(filters: $filters, perPage: $perPage);
         return response()->json($projects);
     }

@@ -29,9 +29,9 @@
           <div>
             <CommonBaseSelect
               v-model="filters.status"
-              placeholder="All Status"
               @change="handleFilterChange"
             >
+              <option value="">All Status</option>
               <option value="planned">Planned</option>
               <option value="in_progress">In Progress</option>
               <option value="completed">Completed</option>
@@ -42,10 +42,10 @@
           <div>
             <CommonBaseSelect
               v-model="filters.deadline_passed"
-              placeholder="All Deadlines"
               @change="handleFilterChange"
             >
-              <option value="false">Upcoming</option>
+              <option value="">All Deadlines</option>
+              <option value="false">Not Overdue</option>
               <option value="true">Overdue</option>
             </CommonBaseSelect>
           </div>
@@ -91,7 +91,7 @@
       </div>
 
       <!-- Projects Grid -->
-      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div
           v-for="project in projects"
           :key="project.id"
