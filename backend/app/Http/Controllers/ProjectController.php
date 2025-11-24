@@ -28,6 +28,7 @@ class ProjectController extends Controller
     public function store(StoreProjectRequest $request)
     {
         $validated = $request->validated();
+        $validated['owner_id'] = auth('sanctum')->id();
         if($validated) {
             $this->projectService->createProject($validated);
         }

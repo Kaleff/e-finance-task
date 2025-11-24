@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\StatsController;
 use App\Http\Controllers\TaskCommentController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Http\Request;
