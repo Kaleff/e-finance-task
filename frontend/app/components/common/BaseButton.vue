@@ -48,7 +48,7 @@ const props = defineProps({
 defineEmits(['click'])
 
 const buttonClasses = computed(() => {
-  const baseClasses = 'relative inline-flex items-center justify-center font-medium rounded-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
+  const baseClasses = 'cursor-pointer relative inline-flex items-center justify-center font-medium rounded-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
   
   const sizeClasses = {
     sm: 'px-3 py-1.5 text-xs',
