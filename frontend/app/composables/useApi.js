@@ -38,23 +38,28 @@ export const useApi = () => {
    * @returns {Promise} - API response
    */
   const post = async (endpoint, body = {}) => {
-    try {
-      const { data, error } = await useFetch(`${baseURL}${endpoint}`, {
-        method: 'POST',
-        body,
-        headers: getHeaders(),
-      })
-
-      if (error.value) {
-        throw new Error(error.value.message || 'Failed to create resource')
+    let errorMessage = null;
+    const { data, error } = await useFetch(`${baseURL}${endpoint}`, {
+      method: 'POST',
+      body,
+      headers: getHeaders(),
+      onResponseError({ response }) {
+        errorMessage = response._data.message || null;
+        if(errorMessage) {
+          throw new Error(errorMessage || 'Failed to create resource')
+        } else {
+          handleError(new Error('Failed to create resource'))
+        }
       }
+    });
 
-      return data.value
-    } catch (err) {
-      handleError(err)
-      throw err
+    if (errorMessage || error.value) {
+      // Return or throw the custom backend message
+      throw new Error(errorMessage || error.value.message || 'Failed to create resource');
     }
-  }
+
+    return data.value;
+  };
 
   /**
    * Make a PUT request
@@ -63,22 +68,26 @@ export const useApi = () => {
    * @returns {Promise} - API response
    */
   const put = async (endpoint, body = {}) => {
-    try {
-      const { data, error } = await useFetch(`${baseURL}${endpoint}`, {
-        method: 'PUT',
-        body,
-        headers: getHeaders(),
-      })
-
-      if (error.value) {
-        throw new Error(error.value.message || 'Failed to update resource')
+    let errorMessage = null;
+    const { data, error } = await useFetch(`${baseURL}${endpoint}`, {
+      method: 'PUT',
+      body,
+      headers: getHeaders(),
+      onResponseError({ response }) {
+        errorMessage = response._data.message || null;
+        if(errorMessage) {
+          throw new Error(errorMessage || 'Failed to update resource')
+        } else {
+          handleError(new Error('Failed to update resource'))
+        }
       }
+    });
 
-      return data.value
-    } catch (err) {
-      handleError(err)
-      throw err
+    if (errorMessage || error.value) {
+      throw new Error(errorMessage || error.value.message || 'Failed to update resource');
     }
+
+    return data.value;
   }
 
   /**
@@ -88,22 +97,26 @@ export const useApi = () => {
    * @returns {Promise} - API response
    */
   const patch = async (endpoint, body = {}) => {
-    try {
-      const { data, error } = await useFetch(`${baseURL}${endpoint}`, {
-        method: 'PATCH',
-        body,
-        headers: getHeaders(),
-      })
-
-      if (error.value) {
-        throw new Error(error.value.message || 'Failed to update resource')
+    let errorMessage = null;
+    const { data, error } = await useFetch(`${baseURL}${endpoint}`, {
+      method: 'PATCH',
+      body,
+      headers: getHeaders(),
+      onResponseError({ response }) {
+        errorMessage = response._data.message || null;
+        if(errorMessage) {
+          throw new Error(errorMessage || 'Failed to update resource')
+        } else {
+          handleError(new Error('Failed to update resource'))
+        }
       }
+    });
 
-      return data.value
-    } catch (err) {
-      handleError(err)
-      throw err
+    if (errorMessage || error.value) {
+      throw new Error(errorMessage || error.value.message || 'Failed to update resource');
     }
+
+    return data.value;
   }
 
   /**
@@ -112,21 +125,25 @@ export const useApi = () => {
    * @returns {Promise} - API response
    */
   const del = async (endpoint) => {
-    try {
-      const { data, error } = await useFetch(`${baseURL}${endpoint}`, {
-        method: 'DELETE',
-        headers: getHeaders(),
-      })
-
-      if (error.value) {
-        throw new Error(error.value.message || 'Failed to delete resource')
+    let errorMessage = null;
+    const { data, error } = await useFetch(`${baseURL}${endpoint}`, {
+      method: 'DELETE',
+      headers: getHeaders(),
+      onResponseError({ response }) {
+        errorMessage = response._data.message || null;
+        if(errorMessage) {
+          throw new Error(errorMessage || 'Failed to delete resource')
+        } else {
+          handleError(new Error('Failed to delete resource'))
+        }
       }
+    });
 
-      return data.value
-    } catch (err) {
-      handleError(err)
-      throw err
+    if (errorMessage || error.value) {
+      throw new Error(errorMessage || error.value.message || 'Failed to delete resource');
     }
+
+    return data.value;
   }
 
   /**
