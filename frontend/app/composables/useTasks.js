@@ -4,44 +4,43 @@
  */
 export const useTasks = () => {
   const api = useApi()
-  const tasksStore = useTasksStore()
-  const uiStore = useUiStore()
+  const tasks = ref([])
+  const currentTask = ref(null)
+  const pagination = ref({})
+  const loading = ref(false)
 
   /**
    * Fetch all tasks with optional filters
    * @param {object} filters - Filter parameters (status, priority, assigned_to, project_id)
-   * @param {object} pagination - Pagination parameters
+   * @param {object} paginationParams - Pagination parameters
    * @returns {Promise} - Tasks data
    */
-  const fetchTasks = async (filters = {}, pagination = {}) => {
+  const fetchTasks = async (filters = {}, paginationParams = {}) => {
     try {
-      uiStore.setLoading(true)
+      loading.value = true
       
       const params = {
         ...filters,
-        page: pagination.page || 1,
-        per_page: pagination.per_page || 20,
+        page: paginationParams.page || 1,
+        per_page: paginationParams.per_page || 20,
       }
 
       const response = await api.get('/tasks', params)
       
-      tasksStore.setTasks(response.data)
-      tasksStore.setPagination({
+      tasks.value = response.data || response
+      pagination.value = {
         currentPage: response.current_page,
         lastPage: response.last_page,
         total: response.total,
         perPage: response.per_page,
-      })
+      }
 
       return response
     } catch (error) {
-      uiStore.addNotification({
-        type: 'error',
-        message: 'Failed to fetch tasks',
-      })
+      console.error('Failed to fetch tasks:', error)
       throw error
     } finally {
-      uiStore.setLoading(false)
+      loading.value = false
     }
   }
 
@@ -52,20 +51,15 @@ export const useTasks = () => {
    */
   const fetchTask = async (id) => {
     try {
-      uiStore.setLoading(true)
-      
+      loading.value = true
       const task = await api.get(`/tasks/${id}`)
-      tasksStore.setCurrentTask(task)
-      
+      currentTask.value = task
       return task
     } catch (error) {
-      uiStore.addNotification({
-        type: 'error',
-        message: 'Failed to fetch task details',
-      })
+      console.error('Failed to fetch task:', error)
       throw error
     } finally {
-      uiStore.setLoading(false)
+      loading.value = false
     }
   }
 
@@ -76,27 +70,14 @@ export const useTasks = () => {
    */
   const createTask = async (taskData) => {
     try {
-      uiStore.setLoading(true)
-      
+      loading.value = true
       const task = await api.post('/tasks', taskData)
-      
-      // Optimistic update
-      tasksStore.addTask(task)
-      
-      uiStore.addNotification({
-        type: 'success',
-        message: 'Task created successfully',
-      })
-      
       return task
     } catch (error) {
-      uiStore.addNotification({
-        type: 'error',
-        message: error.message || 'Failed to create task',
-      })
+      console.error('Failed to create task:', error)
       throw error
     } finally {
-      uiStore.setLoading(false)
+      loading.value = false
     }
   }
 
@@ -108,27 +89,14 @@ export const useTasks = () => {
    */
   const updateTask = async (id, taskData) => {
     try {
-      uiStore.setLoading(true)
-      
+      loading.value = true
       const task = await api.put(`/tasks/${id}`, taskData)
-      
-      // Optimistic update
-      tasksStore.updateTask(id, task)
-      
-      uiStore.addNotification({
-        type: 'success',
-        message: 'Task updated successfully',
-      })
-      
       return task
     } catch (error) {
-      uiStore.addNotification({
-        type: 'error',
-        message: error.message || 'Failed to update task',
-      })
+      console.error('Failed to update task:', error)
       throw error
     } finally {
-      uiStore.setLoading(false)
+      loading.value = false
     }
   }
 
@@ -141,21 +109,9 @@ export const useTasks = () => {
   const updateTaskStatus = async (id, status) => {
     try {
       const task = await api.patch(`/tasks/${id}/status`, { status })
-      
-      // Optimistic update
-      tasksStore.updateTask(id, task)
-      
-      uiStore.addNotification({
-        type: 'success',
-        message: 'Task status updated',
-      })
-      
       return task
     } catch (error) {
-      uiStore.addNotification({
-        type: 'error',
-        message: error.message || 'Failed to update task status',
-      })
+      console.error('Failed to update task status:', error)
       throw error
     }
   }
@@ -167,25 +123,13 @@ export const useTasks = () => {
    */
   const deleteTask = async (id) => {
     try {
-      uiStore.setLoading(true)
-      
+      loading.value = true
       await api.delete(`/tasks/${id}`)
-      
-      // Optimistic update
-      tasksStore.removeTask(id)
-      
-      uiStore.addNotification({
-        type: 'success',
-        message: 'Task deleted successfully',
-      })
     } catch (error) {
-      uiStore.addNotification({
-        type: 'error',
-        message: error.message || 'Failed to delete task',
-      })
+      console.error('Failed to delete task:', error)
       throw error
     } finally {
-      uiStore.setLoading(false)
+      loading.value = false
     }
   }
 
@@ -197,13 +141,9 @@ export const useTasks = () => {
   const fetchComments = async (taskId) => {
     try {
       const comments = await api.get(`/tasks/${taskId}/comments`)
-      tasksStore.setComments(taskId, comments)
       return comments
     } catch (error) {
-      uiStore.addNotification({
-        type: 'error',
-        message: 'Failed to fetch comments',
-      })
+      console.error('Failed to fetch comments:', error)
       throw error
     }
   }
@@ -217,20 +157,9 @@ export const useTasks = () => {
   const addComment = async (taskId, comment) => {
     try {
       const newComment = await api.post(`/tasks/${taskId}/comments`, { comment })
-      
-      tasksStore.addComment(taskId, newComment)
-      
-      uiStore.addNotification({
-        type: 'success',
-        message: 'Comment added successfully',
-      })
-      
       return newComment
     } catch (error) {
-      uiStore.addNotification({
-        type: 'error',
-        message: 'Failed to add comment',
-      })
+      console.error('Failed to add comment:', error)
       throw error
     }
   }
@@ -240,13 +169,10 @@ export const useTasks = () => {
    * @returns {object} - Tasks grouped by status
    */
   const tasksByStatus = computed(() => {
-    const tasks = tasksStore.tasks
-    
     return {
-      todo: tasks.filter(t => t.status === 'todo'),
-      in_progress: tasks.filter(t => t.status === 'in_progress'),
-      review: tasks.filter(t => t.status === 'review'),
-      completed: tasks.filter(t => t.status === 'completed'),
+      todo: tasks.value.filter(t => t.status === 'todo'),
+      in_progress: tasks.value.filter(t => t.status === 'in_progress'),
+      done: tasks.value.filter(t => t.status === 'done'),
     }
   })
 
@@ -312,9 +238,10 @@ export const useTasks = () => {
 
   return {
     // Data
-    tasks: computed(() => tasksStore.tasks),
-    currentTask: computed(() => tasksStore.currentTask),
-    pagination: computed(() => tasksStore.pagination),
+    tasks,
+    currentTask,
+    pagination,
+    loading,
     tasksByStatus,
     
     // Methods

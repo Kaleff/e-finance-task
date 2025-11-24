@@ -4,44 +4,43 @@
  */
 export const useProjects = () => {
   const api = useApi()
-  const projectsStore = useProjectsStore()
-  const uiStore = useUiStore()
+  const projects = ref([])
+  const currentProject = ref(null)
+  const pagination = ref({})
+  const loading = ref(false)
 
   /**
    * Fetch all projects with optional filters
    * @param {object} filters - Filter parameters (status, owner_id, etc.)
-   * @param {object} pagination - Pagination parameters (page, per_page)
+   * @param {object} paginationParams - Pagination parameters (page, per_page)
    * @returns {Promise} - Projects data
    */
-  const fetchProjects = async (filters = {}, pagination = {}) => {
+  const fetchProjects = async (filters = {}, paginationParams = {}) => {
     try {
-      uiStore.setLoading(true)
+      loading.value = true
       
       const params = {
         ...filters,
-        page: pagination.page || 1,
-        per_page: pagination.per_page || 10,
+        page: paginationParams.page || 1,
+        per_page: paginationParams.per_page || 10,
       }
 
       const response = await api.get('/projects', params)
       
-      projectsStore.setProjects(response.data)
-      projectsStore.setPagination({
+      projects.value = response.data || response
+      pagination.value = {
         currentPage: response.current_page,
         lastPage: response.last_page,
         total: response.total,
         perPage: response.per_page,
-      })
+      }
 
       return response
     } catch (error) {
-      uiStore.addNotification({
-        type: 'error',
-        message: 'Failed to fetch projects',
-      })
+      console.error('Failed to fetch projects:', error)
       throw error
     } finally {
-      uiStore.setLoading(false)
+      loading.value = false
     }
   }
 
@@ -52,20 +51,15 @@ export const useProjects = () => {
    */
   const fetchProject = async (id) => {
     try {
-      uiStore.setLoading(true)
-      
+      loading.value = true
       const project = await api.get(`/projects/${id}`)
-      projectsStore.setCurrentProject(project)
-      
+      currentProject.value = project
       return project
     } catch (error) {
-      uiStore.addNotification({
-        type: 'error',
-        message: 'Failed to fetch project details',
-      })
+      console.error('Failed to fetch project:', error)
       throw error
     } finally {
-      uiStore.setLoading(false)
+      loading.value = false
     }
   }
 
@@ -76,27 +70,14 @@ export const useProjects = () => {
    */
   const createProject = async (projectData) => {
     try {
-      uiStore.setLoading(true)
-      
+      loading.value = true
       const project = await api.post('/projects', projectData)
-      
-      // Optimistic update
-      projectsStore.addProject(project)
-      
-      uiStore.addNotification({
-        type: 'success',
-        message: 'Project created successfully',
-      })
-      
       return project
     } catch (error) {
-      uiStore.addNotification({
-        type: 'error',
-        message: error.message || 'Failed to create project',
-      })
+      console.error('Failed to create project:', error)
       throw error
     } finally {
-      uiStore.setLoading(false)
+      loading.value = false
     }
   }
 
@@ -108,27 +89,14 @@ export const useProjects = () => {
    */
   const updateProject = async (id, projectData) => {
     try {
-      uiStore.setLoading(true)
-      
+      loading.value = true
       const project = await api.put(`/projects/${id}`, projectData)
-      
-      // Optimistic update
-      projectsStore.updateProject(id, project)
-      
-      uiStore.addNotification({
-        type: 'success',
-        message: 'Project updated successfully',
-      })
-      
       return project
     } catch (error) {
-      uiStore.addNotification({
-        type: 'error',
-        message: error.message || 'Failed to update project',
-      })
+      console.error('Failed to update project:', error)
       throw error
     } finally {
-      uiStore.setLoading(false)
+      loading.value = false
     }
   }
 
@@ -139,35 +107,22 @@ export const useProjects = () => {
    */
   const deleteProject = async (id) => {
     try {
-      uiStore.setLoading(true)
-      
+      loading.value = true
       await api.delete(`/projects/${id}`)
-      
-      // Optimistic update
-      projectsStore.removeProject(id)
-      
-      uiStore.addNotification({
-        type: 'success',
-        message: 'Project deleted successfully',
-      })
     } catch (error) {
-      uiStore.addNotification({
-        type: 'error',
-        message: error.message || 'Failed to delete project',
-      })
+      console.error('Failed to delete project:', error)
       throw error
     } finally {
-      uiStore.setLoading(false)
+      loading.value = false
     }
   }
 
   /**
    * Get project statistics
-   * @param {number} id - Project ID
    * @returns {object} - Project statistics
    */
   const getProjectStats = computed(() => {
-    const project = projectsStore.currentProject
+    const project = currentProject.value
     
     if (!project || !project.tasks) {
       return {
@@ -232,14 +187,15 @@ export const useProjects = () => {
    * @returns {array} - Filtered projects
    */
   const filterByStatus = (status) => {
-    return projectsStore.projects.filter(p => p.status === status)
+    return projects.value.filter(p => p.status === status)
   }
 
   return {
     // Data
-    projects: computed(() => projectsStore.projects),
-    currentProject: computed(() => projectsStore.currentProject),
-    pagination: computed(() => projectsStore.pagination),
+    projects,
+    currentProject,
+    pagination,
+    loading,
     
     // Methods
     fetchProjects,
