@@ -23,6 +23,7 @@ class IndexProjectRequest extends FormRequest
     {
         return [
             'page' => 'sometimes|integer|min:1',
+            'per_page' => 'sometimes|integer|min:1|max:100',
             'status' => 'sometimes|in:planned,in_progress,completed,archived',
             'owner_id' => 'sometimes|exists:users,id',
             'deadline_passed' => 'sometimes|boolean',

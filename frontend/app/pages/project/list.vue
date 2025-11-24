@@ -148,8 +148,8 @@
       </div>
 
       <!-- Pagination -->
-      <div v-if="pagination.total > 10" class="mt-8 flex justify-center">
-        <div class="flex gap-2">
+      <div v-if="pagination.lastPage > 1" class="mt-8 flex flex-col items-center gap-4">
+        <div class="flex gap-2 items-center">
           <CommonBaseButton
             variant="secondary"
             size="sm"
@@ -158,9 +158,27 @@
           >
             Previous
           </CommonBaseButton>
-          <span class="px-4 py-2 text-sm text-[#1b1b18] dark:text-[#EDEDEC]">
-            Page {{ pagination.currentPage }} of {{ pagination.lastPage }}
-          </span>
+          
+          <!-- Page Numbers -->
+          <div class="flex gap-1">
+            <button
+              v-for="(page, index) in visiblePages"
+              :key="`page-${index}`"
+              @click="page !== '...' ? loadPage(page) : null"
+              :disabled="page === '...'"
+              :class="[
+                'px-3 py-1 text-sm rounded-sm transition-colors',
+                page === '...'
+                  ? 'bg-transparent text-[#1b1b18]/40 dark:text-[#EDEDEC]/40 cursor-default'
+                  : page === pagination.currentPage
+                    ? 'bg-[#f53003] dark:bg-[#FF4433] text-white'
+                    : 'bg-white dark:bg-[#0a0a0a] border border-[#e3e3e0] dark:border-[#3E3E3A] text-[#1b1b18] dark:text-[#EDEDEC] hover:border-[#f53003] dark:hover:border-[#FF4433]'
+              ]"
+            >
+              {{ page }}
+            </button>
+          </div>
+          
           <CommonBaseButton
             variant="secondary"
             size="sm"
@@ -169,6 +187,10 @@
           >
             Next
           </CommonBaseButton>
+        </div>
+        
+        <div class="text-sm text-[#1b1b18]/70 dark:text-[#EDEDEC]/70">
+          Showing {{ ((pagination.currentPage - 1) * pagination.perPage) + 1 }} to {{ Math.min(pagination.currentPage * pagination.perPage, pagination.total) }} of {{ pagination.total }} projects
         </div>
       </div>
     </main>
@@ -279,4 +301,43 @@ const getCompletionRate = (project) => {
   if (!project.tasks_count || project.completed_tasks_count === 0) return 0
   return Math.round((project.completed_tasks_count / project.tasks_count) * 100)
 }
+
+// Calculate visible page numbers for pagination
+const visiblePages = computed(() => {
+  if (!pagination.value.lastPage) return []
+  
+  const current = pagination.value.currentPage
+  const last = pagination.value.lastPage
+  const delta = 2 // Number of pages to show on each side of current page
+  const pages = []
+  
+  // Always show first page
+  pages.push(1)
+  
+  // Calculate range around current page
+  const rangeStart = Math.max(2, current - delta)
+  const rangeEnd = Math.min(last - 1, current + delta)
+  
+  // Add ellipsis after first page if needed
+  if (rangeStart > 2) {
+    pages.push('...')
+  }
+  
+  // Add pages in range
+  for (let i = rangeStart; i <= rangeEnd; i++) {
+    pages.push(i)
+  }
+  
+  // Add ellipsis before last page if needed
+  if (rangeEnd < last - 1) {
+    pages.push('...')
+  }
+  
+  // Always show last page if there's more than 1 page
+  if (last > 1) {
+    pages.push(last)
+  }
+  
+  return pages
+})
 </script>

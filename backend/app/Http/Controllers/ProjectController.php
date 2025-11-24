@@ -14,8 +14,10 @@ class ProjectController extends Controller
     public function index(IndexProjectRequest $request)
     {
         $filters = $request->validated();
-        $page = $filters['page'] ?? 1;
-        $projects = $this->projectService->getProjects(filters: $filters, page: $page);
+        $perPage = $filters['per_page'] ?? 10;
+        unset($filters['per_page']); // Remove per_page from filters
+        
+        $projects = $this->projectService->getProjects(filters: $filters, perPage: $perPage);
         return response()->json($projects);
     }
 

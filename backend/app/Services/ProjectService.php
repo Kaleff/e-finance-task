@@ -3,11 +3,11 @@
 namespace App\Services;
 
 use App\Models\Project;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ProjectService
 {
-    public function getProjects($filters = [], $page = 1): Collection
+    public function getProjects($filters = [], $perPage = 10): LengthAwarePaginator
     {
         $query = Project::query();
 
@@ -27,14 +27,12 @@ class ProjectService
             }
         }
 
-        $query->skip(($page - 1) * 10)->take(10);
-
         return $query->withCount([
             'tasks',
             'tasks as completed_tasks_count' => function ($query) {
                 $query->where('status', 'completed');
             }
-        ])->get();
+        ])->paginate($perPage);
     }
 
     public function getProjectById($id): Project|null
