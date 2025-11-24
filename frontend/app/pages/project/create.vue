@@ -18,16 +18,11 @@
         <form @submit.prevent="handleSubmit">
           <!-- Project Name -->
           <div class="mb-6">
-            <label for="name" class="block text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC] mb-2">
-              Project Name *
-            </label>
-            <input
-              id="name"
+            <CommonBaseInput
               v-model="formData.name"
-              type="text"
-              required
-              class="w-full px-4 py-2 border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm bg-white dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] focus:outline-none focus:ring-2 focus:ring-[#f53003] dark:focus:ring-[#FF4433]"
+              label="Project Name"
               placeholder="Enter project name"
+              required
             />
           </div>
 
@@ -64,14 +59,10 @@
 
           <!-- Deadline -->
           <div class="mb-6">
-            <label for="deadline" class="block text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC] mb-2">
-              Deadline
-            </label>
-            <input
-              id="deadline"
+            <CommonBaseInput
               v-model="formData.deadline"
               type="date"
-              class="w-full px-4 py-2 border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm bg-white dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] focus:outline-none focus:ring-2 focus:ring-[#f53003] dark:focus:ring-[#FF4433]"
+              label="Deadline"
             />
           </div>
 
