@@ -27,29 +27,27 @@
         <!-- Filters -->
         <div class="mt-6 flex flex-wrap gap-4">
           <div>
-            <select
+            <CommonBaseSelect
               v-model="filters.status"
-              class="px-4 py-2 border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm bg-white dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] text-sm focus:outline-none focus:ring-2 focus:ring-[#f53003] dark:focus:ring-[#FF4433]"
+              placeholder="All Status"
               @change="handleFilterChange"
             >
-              <option value="">All Status</option>
               <option value="planned">Planned</option>
               <option value="in_progress">In Progress</option>
               <option value="completed">Completed</option>
               <option value="archived">Archived</option>
-            </select>
+            </CommonBaseSelect>
           </div>
           
           <div>
-            <select
+            <CommonBaseSelect
               v-model="filters.deadline_passed"
-              class="px-4 py-2 border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm bg-white dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] text-sm focus:outline-none focus:ring-2 focus:ring-[#f53003] dark:focus:ring-[#FF4433]"
+              placeholder="All Deadlines"
               @change="handleFilterChange"
             >
-              <option value="">All Deadlines</option>
               <option value="false">Upcoming</option>
               <option value="true">Overdue</option>
-            </select>
+            </CommonBaseSelect>
           </div>
 
           <CommonBaseButton
