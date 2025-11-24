@@ -1,7 +1,7 @@
 <template>
   <div>
     <NuxtPage />
-    <Notification />
+    <CommonNotification />
   </div>
 </template>
 
