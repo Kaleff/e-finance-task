@@ -13,21 +13,16 @@ export const useApi = () => {
    * @returns {Promise} - API response
    */
   const get = async (endpoint, params = {}) => {
-    try {
-      const { data, error } = await useFetch(`${baseURL}${endpoint}`, {
+   try {
+      const response = await $fetch(`${baseURL}${endpoint}`, {
         method: 'GET',
         params,
         headers: getHeaders(),
       })
-
-      if (error.value) {
-        throw new Error(error.value.message || 'Failed to fetch data')
-      }
-
-      return data.value
-    } catch (err) {
-      handleError(err)
-      throw err
+      return response
+    } catch (error) {
+      const errorMessage = error.data?.message || error.message || 'Failed to retrieve resource'
+      throw new Error(errorMessage)
     }
   }
 
