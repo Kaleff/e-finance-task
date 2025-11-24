@@ -19,14 +19,6 @@ export const useAuth = () => {
       if (response.access_token) {
         authStore.setToken(response.access_token)
         authStore.setUser(response.user)
-        
-        // Store token in cookie for persistence
-        const token = useCookie('auth_token', {
-          maxAge: 60 * 60 * 24 * 7, // 7 days
-          sameSite: 'lax',
-        })
-        token.value = response.token
-
         return response
       }
     } catch (error) {
@@ -46,13 +38,6 @@ export const useAuth = () => {
       if (response.access_token) {
         authStore.setToken(response.access_token)
         authStore.setUser(response.user)
-        
-        const token = useCookie('auth_token', {
-          maxAge: 60 * 60 * 24 * 7,
-          sameSite: 'lax',
-        })
-        token.value = response.token
-
         return response
       }
     } catch (error) {
@@ -69,12 +54,7 @@ export const useAuth = () => {
     } catch (error) {
       console.error('Logout error:', error)
     } finally {
-      // Clear auth state regardless of API response
       authStore.clearAuth()
-      
-      const token = useCookie('auth_token')
-      token.value = null
-      
       router.push('/login')
     }
   }
@@ -124,10 +104,8 @@ export const useAuth = () => {
    * Initialize auth from stored token
    */
   const initAuth = async () => {
-    const token = useCookie('auth_token')
-    
-    if (token.value) {
-      authStore.setToken(token.value)
+    console.log('Initializing auth...')
+    if (authStore.token) {
       try {
         await fetchUser()
       } catch (error) {

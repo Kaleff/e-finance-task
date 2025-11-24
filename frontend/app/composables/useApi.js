@@ -156,10 +156,10 @@ export const useApi = () => {
       'Accept': 'application/json',
     }
 
-    // Add authorization token if available
-    const token = useCookie('auth_token')
-    if (token.value) {
-      headers['Authorization'] = `Bearer ${token.value}`
+    // Add authorization token from auth store
+    const authStore = useAuthStore()
+    if (authStore.token) {
+      headers['Authorization'] = `Bearer ${authStore.token}`
     }
 
     return headers
