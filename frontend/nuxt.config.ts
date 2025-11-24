@@ -35,5 +35,14 @@ export default defineNuxtConfig({
         { name: 'description', content: 'Task Management Application' }
       ]
     }
+  },
+
+  vite: {
+    server: {
+      watch: {
+        usePolling: true,
+        interval: 1000,
+      }
+    }
   }
 })
