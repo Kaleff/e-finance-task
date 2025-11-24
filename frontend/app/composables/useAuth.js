@@ -43,8 +43,8 @@ export const useAuth = () => {
     try {
       const response = await api.post('/register', userData)
       
-      if (response.token) {
-        authStore.setToken(response.token)
+      if (response.access_token) {
+        authStore.setToken(response.access_token)
         authStore.setUser(response.user)
         
         const token = useCookie('auth_token', {
