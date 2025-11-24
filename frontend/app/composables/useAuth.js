@@ -16,8 +16,8 @@ export const useAuth = () => {
     try {
       const response = await api.post('/login', credentials)
       
-      if (response.token) {
-        authStore.setToken(response.token)
+      if (response.access_token) {
+        authStore.setToken(response.access_token)
         authStore.setUser(response.user)
         
         // Store token in cookie for persistence
