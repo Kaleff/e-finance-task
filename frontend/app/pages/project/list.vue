@@ -121,7 +121,7 @@
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
               </svg>
-              <span>{{ project.tasks?.length || 0 }} tasks</span>
+              <span>{{ project.tasks_count || 0 }} tasks</span>
             </div>
             <div v-if="project.deadline" class="flex items-center gap-1" :class="{ 'text-red-600 dark:text-red-400': isOverdue(project) }">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -132,7 +132,7 @@
           </div>
 
           <!-- Progress Bar -->
-          <div v-if="project.tasks?.length" class="mt-4">
+          <div v-if="project.tasks_count > 0" class="mt-4">
             <div class="flex justify-between text-xs text-[#1b1b18]/60 dark:text-[#EDEDEC]/60 mb-1">
               <span>Progress</span>
               <span>{{ getCompletionRate(project) }}%</span>
@@ -276,8 +276,7 @@ const formatDate = (date) => {
 }
 
 const getCompletionRate = (project) => {
-  if (!project.tasks || project.tasks.length === 0) return 0
-  const completed = project.tasks.filter(t => t.status === 'done').length
-  return Math.round((completed / project.tasks.length) * 100)
+  if (!project.tasks_count || project.completed_tasks_count === 0) return 0
+  return Math.round((project.completed_tasks_count / project.tasks_count) * 100)
 }
 </script>

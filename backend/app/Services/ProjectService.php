@@ -29,7 +29,12 @@ class ProjectService
 
         $query->skip(($page - 1) * 10)->take(10);
 
-        return $query->with('tasks')->get();
+        return $query->withCount([
+            'tasks',
+            'tasks as completed_tasks_count' => function ($query) {
+                $query->where('status', 'completed');
+            }
+        ])->get();
     }
 
     public function getProjectById($id): Project|null
