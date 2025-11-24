@@ -24,7 +24,8 @@ class ProjectController extends Controller
 
     public function show($id)
     {
-        $project = $this->projectService->getProjectById($id);
+        $perPage = request()->get('per_page', 100);
+        $project = $this->projectService->getProjectById($id, $perPage);
         return response()->json($project);
     }
 
