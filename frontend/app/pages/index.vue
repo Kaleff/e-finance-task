@@ -75,14 +75,14 @@
         <div class="mt-8">
           <h3 class="text-lg font-medium text-[#1b1b18] dark:text-[#EDEDEC] mb-4">Quick Actions</h3>
           <div class="flex flex-wrap gap-3">
-            <NuxtLink to="/projects">
-              <CommonBaseButton variant="primary">
-                View Projects
+            <NuxtLink to="/project/create">
+              <CommonBaseButton variant="secondary">
+                Create Project
               </CommonBaseButton>
             </NuxtLink>
-            <NuxtLink to="/tasks">
+            <NuxtLink to="/task/create">
               <CommonBaseButton variant="secondary">
-                View Tasks
+                Create Task
               </CommonBaseButton>
             </NuxtLink>
           </div>
