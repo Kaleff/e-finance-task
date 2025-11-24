@@ -258,7 +258,7 @@ const clearFilters = () => {
 }
 
 const navigateToProject = (id) => {
-  router.push(`/projects/${id}`)
+  router.push(`/project/${id}`)
 }
 
 const getStatusColor = (status) => {

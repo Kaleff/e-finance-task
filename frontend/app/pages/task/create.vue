@@ -3,10 +3,15 @@
     <!-- Header -->
     <header class="bg-white dark:bg-[#0a0a0a] shadow-sm border-b border-[#e3e3e0] dark:border-[#3E3E3A]">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-        <h1 class="text-2xl font-medium text-[#1b1b18] dark:text-[#EDEDEC]">Create Task</h1>
-        <NuxtLink to="/">
+        <div>
+          <h1 class="text-2xl font-medium text-[#1b1b18] dark:text-[#EDEDEC]">Create Task</h1>
+          <p v-if="projectName" class="mt-1 text-sm text-[#1b1b18]/70 dark:text-[#EDEDEC]/70">
+            for project: <span class="font-medium">{{ projectName }}</span>
+          </p>
+        </div>
+        <NuxtLink :to="projectId ? `/projects/${projectId}` : '/project/list'">
           <CommonBaseButton variant="secondary" size="sm">
-            Back to Dashboard
+            Back to Project
           </CommonBaseButton>
         </NuxtLink>
       </div>
@@ -16,18 +21,15 @@
     <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="bg-white dark:bg-[#0a0a0a] rounded-sm shadow-sm border border-[#e3e3e0] dark:border-[#3E3E3A] p-6">
         <form @submit.prevent="handleSubmit">
-          <!-- Project Selection -->
+          <!-- Project Info (Read-only) -->
           <div class="mb-6">
-            <CommonBaseSelect
-              v-model="form.project_id"
-              label="Project"
-              placeholder="Select a project"
-              required
-            >
-              <option v-for="project in projects" :key="project.id" :value="project.id">
-                {{ project.name }}
-              </option>
-            </CommonBaseSelect>
+            <label class="block text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC] mb-2">
+              Project
+            </label>
+            <div class="w-full px-4 py-2 border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm bg-[#FDFDFC] dark:bg-[#1b1b18]/20 text-[#1b1b18] dark:text-[#EDEDEC]">
+              {{ projectName }}
+            </div>
+            <input type="hidden" name="project_id" :value="projectId" />
           </div>
 
           <!-- Task Title -->
@@ -103,7 +105,7 @@
             >
               {{ loading ? 'Creating...' : 'Create Task' }}
             </CommonBaseButton>
-            <NuxtLink to="/" class="flex-1">
+            <NuxtLink :to="projectId ? `/projects/${projectId}` : '/project/list'" class="flex-1">
               <CommonBaseButton variant="secondary" class="w-full">
                 Cancel
               </CommonBaseButton>
@@ -121,8 +123,8 @@ definePageMeta({
 })
 
 const { createTask } = useTasks()
-const { fetchProjects, projects } = useProjects()
 const router = useRouter()
+const route = useRoute()
 
 const form = ref({
   project_id: '',
@@ -135,13 +137,32 @@ const form = ref({
 
 const loading = ref(false)
 const error = ref(null)
+const projectName = ref('')
+const projectId = ref(null)
 
-// Fetch projects on mount
-onMounted(async () => {
-  try {
-    await fetchProjects()
-  } catch (err) {
-    error.value = 'Failed to load projects'
+// Access router push state
+onMounted(() => {
+  // Option 1: Access from history.state (for state passed via router.push)
+  const state = history.state
+  if (state?.projectId && state?.projectName) {
+    projectId.value = state.projectId
+    projectName.value = state.projectName
+    form.value.project_id = state.projectId
+  }
+  
+  // Option 2: Fallback to query params (for query string parameters)
+  else if (route.query.project_id && route.query.project_name) {
+    projectId.value = parseInt(route.query.project_id)
+    projectName.value = route.query.project_name
+    form.value.project_id = projectId.value
+  }
+  
+  // Redirect if no project info provided
+  else {
+    error.value = 'Tasks must be created from a project page. Redirecting...'
+    setTimeout(() => {
+      router.push('/project/list')
+    }, 2000)
   }
 })
 
@@ -151,7 +172,7 @@ const handleSubmit = async () => {
 
   try {
     await createTask(form.value)
-    router.push('/tasks')
+    router.push(`/project/${projectId.value}`)
   } catch (err) {
     error.value = err.message || 'Failed to create task'
   } finally {
