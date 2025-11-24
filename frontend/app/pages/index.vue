@@ -27,7 +27,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
           <!-- Projects Card -->
           <NuxtLink
-            to="/projects"
+            to="/project/list"
             class="bg-white dark:bg-[#0a0a0a] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm p-6 hover:border-[#f53003] dark:hover:border-[#FF4433] transition-colors cursor-pointer"
           >
             <div class="flex items-center justify-between">
