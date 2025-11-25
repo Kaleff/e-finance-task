@@ -21,7 +21,7 @@ class TaskCommentController extends Controller
         $data = $request->validated();
         $taskId = $data['task_id'];
 
-        $comment = $this->taskService->createTaskComment($taskId, $data['comment'], Auth::id());
+        $comment = $this->taskService->createTaskComment($taskId, $data['comment'], auth('sanctum')->id());
 
         return response()->json($comment, 201);
     }
@@ -30,7 +30,7 @@ class TaskCommentController extends Controller
     {
         $data = $request->validated();
 
-        $updated = $this->taskService->updateTaskComment($commentId, $data['comment'], Auth::id());
+        $updated = $this->taskService->updateTaskComment($commentId, $data['comment'], auth('sanctum')->id());
 
         if ($updated) {
             return response()->json(['message' => 'Comment updated successfully']);
