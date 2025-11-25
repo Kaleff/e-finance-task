@@ -15,6 +15,17 @@ class UpdateTaskStatusRequest extends FormRequest
     }
 
     /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'id' => $this->route('id')
+        ]);
+    }
+
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
@@ -22,6 +33,7 @@ class UpdateTaskStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'id' => 'required|integer|min:1',
             'status' => 'required|in:todo,in_progress,done,cancelled',
         ];
     }

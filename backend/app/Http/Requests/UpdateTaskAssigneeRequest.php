@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateTaskPriorityRequest extends FormRequest
+class UpdateTaskAssigneeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,6 @@ class UpdateTaskPriorityRequest extends FormRequest
         ]);
     }
 
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -34,7 +33,7 @@ class UpdateTaskPriorityRequest extends FormRequest
     {
         return [
             'id' => 'required|integer|min:1',
-            'priority' => 'required|in:low,medium,high',
+            'assigned_to' => 'required|integer|exists:users,id'
         ];
     }
 }
