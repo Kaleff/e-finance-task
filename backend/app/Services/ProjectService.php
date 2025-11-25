@@ -30,7 +30,7 @@ class ProjectService
         return $query->withCount([
             'tasks',
             'tasks as completed_tasks_count' => function ($query) {
-                $query->where('status', 'completed');
+                $query->where('status', 'done');
             }
         ])->paginate($perPage);
     }
