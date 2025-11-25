@@ -123,46 +123,6 @@ export const useApi = () => {
     return headers
   }
 
-  /**
-   * Handle API errors
-   * @param {Error} error - Error object
-   */
-  const handleError = (error) => {
-    console.error('API Error:', error)
-    
-    // You can add more sophisticated error handling here
-    // For example, redirect to login on 401, show notifications, etc.
-    const uiStore = useUiStore()
-    
-    if (error.response?.status === 401) {
-      uiStore.addNotification({
-        type: 'error',
-        message: 'Unauthorized. Please login again.',
-      })
-      navigateTo('/login')
-    } else if (error.response?.status === 403) {
-      uiStore.addNotification({
-        type: 'error',
-        message: 'You do not have permission to perform this action.',
-      })
-    } else if (error.response?.status === 404) {
-      uiStore.addNotification({
-        type: 'error',
-        message: 'Resource not found.',
-      })
-    } else if (error.response?.status >= 500) {
-      uiStore.addNotification({
-        type: 'error',
-        message: 'Server error. Please try again later.',
-      })
-    } else {
-      uiStore.addNotification({
-        type: 'error',
-        message: error.message || 'An error occurred.',
-      })
-    }
-  }
-
   return {
     get,
     post,

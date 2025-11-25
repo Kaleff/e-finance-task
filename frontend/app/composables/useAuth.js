@@ -13,7 +13,6 @@ export const useAuth = () => {
    * @returns {Promise} - Authentication response
    */
   const login = async (credentials) => {
-    try {
       const response = await api.post('/login', credentials)
       
       if (response.access_token) {
@@ -21,9 +20,6 @@ export const useAuth = () => {
         authStore.setUser(response.user)
         return response
       }
-    } catch (error) {
-      throw error
-    }
   }
 
   /**

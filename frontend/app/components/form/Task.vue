@@ -158,12 +158,6 @@ const props = defineProps({
 
 const emit = defineEmits(['update:form', 'submit', 'load-users'])
 
-// Create computed property for two-way binding
-const localForm = computed({
-  get: () => props.form,
-  set: (value) => emit('update:form', value)
-})
-
 // Helper to update individual fields
 const updateField = (field, value) => {
   emit('update:form', { ...props.form, [field]: value })
