@@ -20,98 +20,14 @@
     <!-- Main Content -->
     <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="bg-white dark:bg-[#0a0a0a] rounded-sm shadow-sm border border-[#e3e3e0] dark:border-[#3E3E3A] p-6">
-        <form @submit.prevent="handleSubmit">
-          <!-- Project Info (Read-only) -->
-          <div class="mb-6">
-            <label class="block text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC] mb-2">
-              Project
-            </label>
-            <div class="w-full px-4 py-2 border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm bg-[#FDFDFC] dark:bg-[#1b1b18]/20 text-[#1b1b18] dark:text-[#EDEDEC]">
-              {{ projectName }}
-            </div>
-            <input type="hidden" name="project_id" :value="projectId" />
-          </div>
-
-          <!-- Task Title -->
-          <div class="mb-6">
-            <CommonBaseInput
-              v-model="form.title"
-              label="Task Title"
-              placeholder="Enter task title"
-              required
-            />
-          </div>
-
-          <!-- Description -->
-          <div class="mb-6">
-            <label for="description" class="block text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC] mb-2">
-              Description
-            </label>
-            <textarea
-              id="description"
-              v-model="form.description"
-              rows="4"
-              class="w-full px-4 py-2 border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm bg-white dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] focus:outline-none focus:ring-2 focus:ring-[#f53003] dark:focus:ring-[#FF4433]"
-              placeholder="Enter task description"
-            ></textarea>
-          </div>
-
-          <!-- Status and Priority -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div>
-              <CommonBaseSelect
-                v-model="form.status"
-                label="Status"
-              >
-                <option value="todo">To Do</option>
-                <option value="in_progress">In Progress</option>
-                <option value="done">Done</option>
-              </CommonBaseSelect>
-            </div>
-
-            <div>
-              <CommonBaseSelect
-                v-model="form.priority"
-                label="Priority"
-              >
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-              </CommonBaseSelect>
-            </div>
-          </div>
-
-          <!-- Estimated Hours -->
-          <div class="mb-6">
-            <CommonBaseInput
-              v-model.number="form.estimated_hours"
-              type="number"
-              label="Estimated Hours"
-              placeholder="0"
-            />
-          </div>
-
-          <!-- Error Message -->
-          <div v-if="error" class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-sm">
-            <p class="text-sm text-red-600 dark:text-red-400">{{ error }}</p>
-          </div>
-
-          <!-- Submit Button -->
-          <div class="flex gap-3">
-            <CommonBaseButton
-              type="submit"
-              :disabled="loading"
-              class="flex-1"
-            >
-              {{ loading ? 'Creating...' : 'Create Task' }}
-            </CommonBaseButton>
-            <NuxtLink :to="projectId ? `/project/${projectId}` : '/project/list'" class="flex-1">
-              <CommonBaseButton variant="secondary" class="w-full">
-                Cancel
-              </CommonBaseButton>
-            </NuxtLink>
-          </div>
-        </form>
+        <TaskForm
+          v-model:form="form"
+          :loading="loading"
+          :error="error"
+          :project-id="projectId"
+          :project-name="projectName"
+          @submit="handleSubmit"
+        />
       </div>
     </main>
   </div>
