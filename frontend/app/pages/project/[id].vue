@@ -23,7 +23,10 @@
                 Back to Projects
               </CommonBaseButton>
             </NuxtLink>
-            <CommonBaseButton size="sm" @click="handleCreateTask">
+            <CommonBaseButton v-if="!isEditMode" size="sm" @click="toggleEditMode">
+              Edit Project
+            </CommonBaseButton>
+            <CommonBaseButton v-if="!isEditMode" size="sm" @click="handleCreateTask">
               Create Task
             </CommonBaseButton>
           </div>
@@ -72,6 +75,25 @@
       <!-- Error State -->
       <div v-else-if="error" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-sm p-6">
         <p class="text-red-600 dark:text-red-400">{{ error }}</p>
+      </div>
+
+      <!-- Edit Form -->
+      <div v-else-if="project && isEditMode" class="bg-white dark:bg-[#0a0a0a] rounded-sm shadow-sm border border-[#e3e3e0] dark:border-[#3E3E3A] p-6">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-medium text-[#1b1b18] dark:text-[#EDEDEC]">Edit Project</h2>
+          <CommonBaseButton variant="secondary" size="sm" @click="toggleEditMode">
+            Cancel
+          </CommonBaseButton>
+        </div>
+        
+        <FormProject
+          v-model:form="formData"
+          :loading="loading"
+          :error="error"
+          :is-edit="true"
+          :project-id="route.params.id"
+          @submit="handleUpdateProject"
+        />
       </div>
 
       <!-- Tasks List -->
@@ -233,9 +255,12 @@ definePageMeta({
 })
 
 const route = useRoute()
-const { fetchProject } = useProjects()
+const { fetchProject, updateProject } = useProjects()
 const { fetchTasks: fetchTasksApi } = useTasks()
 const router = useRouter()
+const uiStore = useUiStore()
+
+const isEditMode = computed(() => route.query.mode === 'edit')
 
 const project = ref(null)
 const tasks = ref([])
@@ -250,6 +275,13 @@ const tasksPagination = ref({
 const loading = ref(false)
 const error = ref(null)
 const statusFilter = ref('')
+
+const formData = ref({
+  name: '',
+  description: '',
+  status: 'planned',
+  deadline: ''
+})
 
 // Load project data
 onMounted(async () => {
@@ -278,6 +310,14 @@ const loadProject = async () => {
       deadline: response.deadline,
       created_at: response.created_at,
       updated_at: response.updated_at
+    }
+    
+    // Populate form data for edit mode
+    formData.value = {
+      name: response.name || '',
+      description: response.description || '',
+      status: response.status || 'planned',
+      deadline: response.deadline || ''
     }
     
     // Load initial tasks from project response
@@ -350,6 +390,41 @@ const handleCreateTask = () => {
 
 const navigateToTask = (taskId) => {
   router.push(`/task/${taskId}`)
+}
+
+const toggleEditMode = () => {
+  if (isEditMode.value) {
+    router.push(`/project/${route.params.id}`)
+  } else {
+    router.push(`/project/${route.params.id}?mode=edit`)
+  }
+}
+
+const handleUpdateProject = async (formDataWithId) => {
+  loading.value = true
+  error.value = null
+
+  try {
+    await updateProject(route.params.id, formDataWithId)
+    
+    uiStore.addNotification({
+      type: 'success',
+      message: 'Project updated successfully!'
+    })
+    
+    // Reload project data and exit edit mode
+    await loadProject()
+    router.push(`/project/${route.params.id}`)
+  } catch (err) {
+    error.value = err.message || 'Failed to update project'
+    
+    uiStore.addNotification({
+      type: 'error',
+      message: err.message || 'Failed to update project'
+    })
+  } finally {
+    loading.value = false
+  }
 }
 
 // Computed properties

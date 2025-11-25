@@ -1,5 +1,8 @@
 <template>
   <form @submit.prevent="handleSubmit">
+    <!-- Hidden Project ID for Edit Mode -->
+    <input v-if="props.isEdit" type="hidden" :value="props.projectId" />
+
     <!-- Project Name -->
     <div class="mb-6">
       <CommonBaseInput
@@ -62,9 +65,9 @@
         :disabled="props.loading"
         class="flex-1"
       >
-        {{ props.loading ? 'Creating...' : 'Create Project' }}
+        {{ props.loading ? (props.isEdit ? 'Updating...' : 'Creating...') : (props.isEdit ? 'Update Project' : 'Create Project') }}
       </CommonBaseButton>
-      <NuxtLink to="/" class="flex-1">
+      <NuxtLink :to="props.isEdit && props.projectId ? `/project/${props.projectId}` : '/'" class="flex-1">
         <CommonBaseButton variant="secondary" class="w-full">
           Cancel
         </CommonBaseButton>
@@ -86,6 +89,14 @@ const props = defineProps({
   error: {
     type: String,
     default: null
+  },
+  isEdit: {
+    type: Boolean,
+    default: false
+  },
+  projectId: {
+    type: [String, Number],
+    default: null
   }
 })
 
@@ -97,6 +108,11 @@ const updateField = (field, value) => {
 }
 
 const handleSubmit = () => {
-  emit('submit')
+  // Add project ID to form data for edit mode
+  const formData = props.isEdit && props.projectId 
+    ? { ...props.form, id: props.projectId }
+    : props.form
+  
+  emit('submit', formData)
 }
 </script>
