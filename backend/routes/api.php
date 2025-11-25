@@ -20,7 +20,7 @@ Route::prefix('project')->group(function () {
     Route::delete('/{id}', [ProjectController::class, 'destroy']);
 })->middleware('auth:sanctum');
 
-Route::prefix('tasks')->group(function () {
+Route::prefix('task')->group(function () {
     Route::get('/', [TaskController::class, 'index']);
     Route::get('/{id}', [TaskController::class, 'show']);
     Route::post('/', [TaskController::class, 'store']);

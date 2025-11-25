@@ -52,7 +52,7 @@ export const useTasks = () => {
   const fetchTask = async (id) => {
     try {
       loading.value = true
-      const task = await api.get(`/tasks/${id}`)
+      const task = await api.get(`/task/${id}`)
       currentTask.value = task
       return task
     } catch (error) {
@@ -90,7 +90,7 @@ export const useTasks = () => {
   const updateTask = async (id, taskData) => {
     try {
       loading.value = true
-      const task = await api.put(`/tasks/${id}`, taskData)
+      const task = await api.put(`/task/${id}`, taskData)
       return task
     } catch (error) {
       console.error('Failed to update task:', error)
@@ -108,7 +108,7 @@ export const useTasks = () => {
    */
   const updateTaskStatus = async (id, status) => {
     try {
-      const task = await api.patch(`/tasks/${id}/status`, { status })
+      const task = await api.patch(`/task/${id}/status`, { status })
       return task
     } catch (error) {
       console.error('Failed to update task status:', error)
@@ -124,7 +124,7 @@ export const useTasks = () => {
   const deleteTask = async (id) => {
     try {
       loading.value = true
-      await api.delete(`/tasks/${id}`)
+      await api.delete(`/task/${id}`)
     } catch (error) {
       console.error('Failed to delete task:', error)
       throw error
@@ -140,7 +140,7 @@ export const useTasks = () => {
    */
   const fetchComments = async (taskId) => {
     try {
-      const comments = await api.get(`/tasks/${taskId}/comments`)
+      const comments = await api.get(`/task/${taskId}/comments`)
       return comments
     } catch (error) {
       console.error('Failed to fetch comments:', error)
@@ -156,7 +156,7 @@ export const useTasks = () => {
    */
   const addComment = async (taskId, comment) => {
     try {
-      const newComment = await api.post(`/tasks/${taskId}/comments`, { comment })
+      const newComment = await api.post(`/task/${taskId}/comments`, { comment })
       return newComment
     } catch (error) {
       console.error('Failed to add comment:', error)
