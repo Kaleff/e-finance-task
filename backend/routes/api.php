@@ -12,16 +12,16 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::prefix('project')->group(function () {
-    Route::get('/index', [ProjectController::class, 'index']);
+Route::prefix('projects')->group(function () {
+    Route::get('/', [ProjectController::class, 'index']);
     Route::get('/{id}', [ProjectController::class, 'show']);
     Route::post('/', [ProjectController::class, 'store']);
     Route::put('/{id}', [ProjectController::class, 'update']);
     Route::delete('/{id}', [ProjectController::class, 'destroy']);
 })->middleware('auth:sanctum');
 
-Route::prefix('task')->group(function () {
-    Route::get('/index', [TaskController::class, 'index']);
+Route::prefix('tasks')->group(function () {
+    Route::get('/', [TaskController::class, 'index']);
     Route::get('/{id}', [TaskController::class, 'show']);
     Route::post('/', [TaskController::class, 'store']);
     Route::put('/{id}', [TaskController::class, 'update']);

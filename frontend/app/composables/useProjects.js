@@ -25,7 +25,7 @@ export const useProjects = () => {
         per_page: paginationParams.per_page || 10,
       }
 
-      const response = await api.get('/project/index', params)
+      const response = await api.get('/projects', params)
       
       projects.value = response.data || response
       pagination.value = {
@@ -52,7 +52,7 @@ export const useProjects = () => {
   const fetchProject = async (id) => {
     try {
       loading.value = true
-      const project = await api.get(`/project/${id}`)
+      const project = await api.get(`/projects/${id}`)
       currentProject.value = project
       return project
     } catch (error) {
@@ -71,7 +71,7 @@ export const useProjects = () => {
   const createProject = async (projectData) => {
     try {
       loading.value = true
-      const project = await api.post('/project/index', projectData)
+      const project = await api.post('/projects', projectData)
       return project
     } catch (error) {
       console.error('Failed to create project:', error)
@@ -90,7 +90,7 @@ export const useProjects = () => {
   const updateProject = async (id, projectData) => {
     try {
       loading.value = true
-      const project = await api.put(`/project/${id}`, projectData)
+      const project = await api.put(`/projects/${id}`, projectData)
       return project
     } catch (error) {
       console.error('Failed to update project:', error)
@@ -108,7 +108,7 @@ export const useProjects = () => {
   const deleteProject = async (id) => {
     try {
       loading.value = true
-      await api.delete(`/project/${id}`)
+      await api.delete(`/projects/${id}`)
     } catch (error) {
       console.error('Failed to delete project:', error)
       throw error

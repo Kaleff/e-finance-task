@@ -312,7 +312,7 @@ const loadTask = async (commentsPage = 1) => {
       per_page: 10
     }
 
-    const response = await api.get(`/task/${route.params.id}`, params)
+    const response = await api.get(`/tasks/${route.params.id}`, params)
 
     task.value = {
       id: response.id,
@@ -350,7 +350,7 @@ const handleAddComment = async () => {
   addingComment.value = true
 
   try {
-    await api.post(`/task/${route.params.id}/comments`, {
+    await api.post(`/tasks/${route.params.id}/comments`, {
       comment: newComment.value
     })
 
@@ -378,7 +378,7 @@ const handleStatusChange = async (newStatus) => {
   updating.value = true
   
   try {
-    await api.patch(`/task/${route.params.id}/status`, { status: newStatus })
+    await api.patch(`/tasks/${route.params.id}/status`, { status: newStatus })
     
     // Update task object
     task.value.status = newStatus
@@ -403,7 +403,7 @@ const handlePriorityChange = async (newPriority) => {
   updating.value = true
   
   try {
-    await api.patch(`/task/${route.params.id}/priority`, { priority: newPriority })
+    await api.patch(`/tasks/${route.params.id}/priority`, { priority: newPriority })
     
     // Update task object
     task.value.priority = newPriority

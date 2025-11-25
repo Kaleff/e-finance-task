@@ -266,7 +266,7 @@ const loadProject = async () => {
       per_page: 20
     }
     
-    const response = await api.get(`/project/${route.params.id}`, params)
+    const response = await api.get(`/projects/${route.params.id}`, params)
     
     project.value = {
       id: response.id,
@@ -312,7 +312,7 @@ const loadTasks = async (page = 1) => {
       params.status = statusFilter.value
     }
     
-    const response = await api.get('/task/index', params)
+    const response = await api.get('/tasks/index', params)
     
     tasks.value = response.data || []
     tasksPagination.value = {
