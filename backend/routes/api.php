@@ -12,6 +12,10 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+Route::get('/users', function () {
+    return \App\Models\User::select('id', 'name', 'email')->get();
+})->middleware('auth:sanctum');
+
 Route::prefix('projects')->group(function () {
     Route::get('/', [ProjectController::class, 'index']);
     Route::get('/{id}', [ProjectController::class, 'show']);

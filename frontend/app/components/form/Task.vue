@@ -75,6 +75,24 @@
             />
           </div>
 
+          <!-- Assignee -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC] mb-2">
+              Assignee
+            </label>
+            <CommonBaseSelect
+              :modelValue="props.form.assigned_to"
+              @update:modelValue="updateField('assigned_to', $event)"
+              @focus="handleLoadUsers"
+              :disabled="props.loadingUsers"
+            >
+              <option :value="null">Unassigned</option>
+              <option v-for="user in props.users" :key="user.id" :value="user.id">
+                {{ user.name }} ({{ user.email }})
+              </option>
+            </CommonBaseSelect>
+          </div>
+
           <!-- Error Message -->
           <div v-if="props.error" class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-sm">
             <p class="text-sm text-red-600 dark:text-red-400">{{ props.error }}</p>
@@ -127,10 +145,18 @@ const props = defineProps({
   taskId: {
     type: [String, Number],
     default: null
+  },
+  users: {
+    type: Array,
+    default: () => []
+  },
+  loadingUsers: {
+    type: Boolean,
+    default: false
   }
 })
 
-const emit = defineEmits(['update:form', 'submit'])
+const emit = defineEmits(['update:form', 'submit', 'load-users'])
 
 // Create computed property for two-way binding
 const localForm = computed({
@@ -145,10 +171,14 @@ const updateField = (field, value) => {
 
 const handleSubmit = () => {
   // Add task ID to form data for edit mode
-  const formData = props.isEdit && props.taskId 
+  const formData = props.isEdit && props.taskId
     ? { ...props.form, id: props.taskId }
     : props.form
-  
+
   emit('submit', formData)
+}
+
+const handleLoadUsers = () => {
+  emit('load-users')
 }
 </script>

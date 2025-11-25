@@ -46,7 +46,7 @@
         </div>
 
         <!-- Task Management -->
-        <div v-if="task" class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div v-if="task" class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
           <CommonInfoCard>
             <label class="block text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC] mb-2">
               Status
@@ -76,8 +76,24 @@
               </option>
             </CommonBaseSelect>
           </CommonInfoCard>
-        </div>
 
+          <CommonInfoCard>
+            <label class="block text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC] mb-2">
+              Assignee
+            </label>
+            <CommonBaseSelect
+              v-model="selectedAssignee"
+              @update:modelValue="handleAssigneeChange"
+              @focus="loadUsers"
+              :disabled="updating || loadingUsers"
+            >
+              <option :value="null">Unassigned</option>
+              <option v-for="user in users" :key="user.id" :value="user.id">
+                {{ user.name }} ({{ user.email }})
+              </option>
+            </CommonBaseSelect>
+          </CommonInfoCard>
+        </div>
         <!-- Task Stats -->
         <div v-if="task" class="mt-4 grid grid-cols-1 md:grid-cols-4 gap-4">
           <CommonInfoCard>
@@ -140,7 +156,10 @@
           :task-id="route.params.id"
           :project-id="task.project_id"
           :project-name="'Project #' + task.project_id"
+          :users="users"
+          :loading-users="loadingUsers"
           @submit="handleUpdateTask"
+          @load-users="loadUsers"
         />
       </div>
 
@@ -294,6 +313,7 @@ const router = useRouter()
 const api = useApi()
 const uiStore = useUiStore()
 const { deleteTask, fetchTask, updateTask } = useTasks()
+const { fetchUsers } = useUsers()
 const task = ref(null)
 const isEditMode = computed(() => route.query.mode === 'edit')
 const comments = ref([])
@@ -313,13 +333,17 @@ const deleting = ref(false)
 const showDeleteConfirm = ref(false)
 const selectedStatus = ref('')
 const selectedPriority = ref('')
+const selectedAssignee = ref(null)
+const users = ref([])
+const loadingUsers = ref(false)
 
 const formData = ref({
   title: '',
   description: '',
   status: 'todo',
   priority: 'medium',
-  estimated_hours: null
+  estimated_hours: null,
+  assigned_to: null
 })
 
 const statusOptions = [
@@ -367,6 +391,16 @@ const loadTask = async (commentsPage = 1) => {
     // Initialize select values
     selectedStatus.value = response.status || 'todo'
     selectedPriority.value = response.priority || 'medium'
+    selectedAssignee.value = response.assigned_to || null
+    
+    // Pre-populate users array with assignee if exists
+    if (response.assignee && response.assignee.id) {
+      users.value = [{
+        id: response.assignee.id,
+        name: response.assignee.name,
+        email: response.assignee.email
+      }]
+    }
 
     // Populate form data for edit mode
     formData.value = {
@@ -374,7 +408,8 @@ const loadTask = async (commentsPage = 1) => {
       description: response.description || '',
       status: response.status || 'todo',
       priority: response.priority || 'medium',
-      estimated_hours: response.estimated_hours || null
+      estimated_hours: response.estimated_hours || null,
+      assigned_to: response.assigned_to || null
     }
 
     comments.value = response.comments || []
@@ -462,6 +497,50 @@ const handlePriorityChange = async (newPriority) => {
     uiStore.addNotification({
       type: 'error',
       message: err.message || 'Failed to update task priority'
+    })
+    // Revert on error
+    await loadTask(commentsPagination.value.current_page)
+  } finally {
+    updating.value = false
+  }
+}
+
+const loadUsers = async () => {
+  // If we already have more than just the assignee, skip loading
+  if (users.value.length > 1) return
+  
+  loadingUsers.value = true
+  try {
+    const response = await fetchUsers()
+    users.value = response || []
+  } catch (err) {
+    uiStore.addNotification({
+      type: 'error',
+      message: 'Failed to load users'
+    })
+  } finally {
+    loadingUsers.value = false
+  }
+}
+
+const handleAssigneeChange = async (newAssignee) => {
+  updating.value = true
+  
+  try {
+    const assigneeId = newAssignee === '' ? null : newAssignee
+    await api.patch(`/tasks/${route.params.id}/assignee`, { assigned_to: assigneeId })
+    
+    // Update task object
+    task.value.assigned_to = assigneeId
+    
+    uiStore.addNotification({
+      type: 'success',
+      message: 'Task assignee updated successfully!'
+    })
+  } catch (err) {
+    uiStore.addNotification({
+      type: 'error',
+      message: err.message || 'Failed to update task assignee'
     })
     // Revert on error
     await loadTask(commentsPagination.value.current_page)

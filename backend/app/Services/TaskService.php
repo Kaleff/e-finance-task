@@ -41,6 +41,7 @@ class TaskService
         }
 
         $comments = $task->comments()->paginate($perPage);
+        $assignee = $task->assignee()->first();
 
         return [
             'id' => $task->id,
@@ -59,6 +60,11 @@ class TaskService
                 'last_page' => $comments->lastPage(),
                 'per_page' => $comments->perPage(),
                 'total' => $comments->total(),
+            ],
+            'assignee' => [
+                'id' => $assignee?->id,
+                'name' => $assignee?->name,
+                'email' => $assignee?->email,
             ],
         ];
     }

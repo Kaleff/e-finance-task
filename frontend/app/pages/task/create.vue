@@ -26,7 +26,10 @@
           :error="error"
           :project-id="projectId"
           :project-name="projectName"
+          :users="users"
+          :loading-users="loadingUsers"
           @submit="handleSubmit"
+          @load-users="loadUsers"
         />
       </div>
     </main>
@@ -39,6 +42,7 @@ definePageMeta({
 })
 
 const { createTask } = useTasks()
+const { fetchUsers } = useUsers()
 const router = useRouter()
 const route = useRoute()
 const uiStore = useUiStore()
@@ -49,11 +53,14 @@ const form = ref({
   description: '',
   status: 'todo',
   priority: 'medium',
-  estimated_hours: null
+  estimated_hours: null,
+  assigned_to: null
 })
 
 const loading = ref(false)
 const error = ref(null)
+const users = ref([])
+const loadingUsers = ref(false)
 const projectName = ref('')
 const projectId = ref(null)
 
@@ -82,6 +89,23 @@ onMounted(() => {
     }, 2000)
   }
 })
+
+const loadUsers = async () => {
+  if (users.value.length > 0) return // Already loaded
+  
+  loadingUsers.value = true
+  try {
+    const response = await fetchUsers()
+    users.value = response || []
+  } catch (err) {
+    uiStore.addNotification({
+      type: 'error',
+      message: 'Failed to load users'
+    })
+  } finally {
+    loadingUsers.value = false
+  }
+}
 
 const handleSubmit = async () => {
   loading.value = true
