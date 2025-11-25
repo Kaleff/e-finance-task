@@ -39,10 +39,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/comments/{commentId}', [TaskCommentController::class, 'update']);
         Route::delete('/comments/{commentId}', [TaskCommentController::class, 'destroy']);
     });
+
+    Route::get('/stats/project-overview', [StatsController::class, 'projectOverview']);
+    Route::get('/stats', [StatsController::class, 'index']);
 });
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-
-Route::get('/stats', [StatsController::class, 'index'])->middleware('auth:sanctum');

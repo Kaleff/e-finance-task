@@ -37,7 +37,18 @@ class ProjectService
 
     public function getProjectById($id, $perPage = 100): array|null
     {
-        $project = Project::find($id);
+        $project = Project::withCount([
+            'tasks as total_tasks',
+            'tasks as todo_tasks' => function ($query) {
+                $query->where('status', 'todo');
+            },
+            'tasks as in_progress_tasks' => function ($query) {
+                $query->where('status', 'in_progress');
+            },
+            'tasks as completed_tasks' => function ($query) {
+                $query->where('status', 'done');
+            },
+        ])->find($id);
 
         if (!$project) {
             return null;
@@ -55,6 +66,12 @@ class ProjectService
             'created_at' => $project->created_at,
             'updated_at' => $project->updated_at,
             'tasks' => $tasks->items(),
+            'stats' => [
+                'total' => $project->total_tasks,
+                'todo' => $project->todo_tasks,
+                'in_progress' => $project->in_progress_tasks,
+                'completed' => $project->completed_tasks,
+            ],
             'tasks_pagination' => [
                 'current_page' => $tasks->currentPage(),
                 'last_page' => $tasks->lastPage(),
