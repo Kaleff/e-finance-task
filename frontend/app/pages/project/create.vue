@@ -112,7 +112,7 @@ const handleSubmit = async () => {
 
   try {
     await createProject(formData)
-    router.push('/projects')
+    router.push('/project/list')
   } catch (err) {
     error.value = err.message || 'Failed to create project'
   } finally {

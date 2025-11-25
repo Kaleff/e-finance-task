@@ -25,7 +25,7 @@ export const useTasks = () => {
         per_page: paginationParams.per_page || 20,
       }
 
-      const response = await api.get('/tasks', params)
+      const response = await api.get('/task/index', params)
       
       tasks.value = response.data || response
       pagination.value = {
@@ -71,7 +71,7 @@ export const useTasks = () => {
   const createTask = async (taskData) => {
     try {
       loading.value = true
-      const task = await api.post('/tasks', taskData)
+      const task = await api.post('/task/index', taskData)
       return task
     } catch (error) {
       console.error('Failed to create task:', error)

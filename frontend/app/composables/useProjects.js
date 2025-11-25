@@ -25,7 +25,7 @@ export const useProjects = () => {
         per_page: paginationParams.per_page || 10,
       }
 
-      const response = await api.get('/projects', params)
+      const response = await api.get('/project/index', params)
       
       projects.value = response.data || response
       pagination.value = {
@@ -71,7 +71,7 @@ export const useProjects = () => {
   const createProject = async (projectData) => {
     try {
       loading.value = true
-      const project = await api.post('/projects', projectData)
+      const project = await api.post('/project/index', projectData)
       return project
     } catch (error) {
       console.error('Failed to create project:', error)

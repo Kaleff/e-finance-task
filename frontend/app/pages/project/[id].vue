@@ -312,7 +312,7 @@ const loadTasks = async (page = 1) => {
       params.status = statusFilter.value
     }
     
-    const response = await api.get('/tasks', params)
+    const response = await api.get('/task/index', params)
     
     tasks.value = response.data || []
     tasksPagination.value = {

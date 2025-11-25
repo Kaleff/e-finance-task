@@ -13,7 +13,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::prefix('project')->group(function () {
-    Route::get('/', [ProjectController::class, 'index']);
+    Route::get('/index', [ProjectController::class, 'index']);
     Route::get('/{id}', [ProjectController::class, 'show']);
     Route::post('/', [ProjectController::class, 'store']);
     Route::put('/{id}', [ProjectController::class, 'update']);
@@ -21,7 +21,7 @@ Route::prefix('project')->group(function () {
 })->middleware('auth:sanctum');
 
 Route::prefix('task')->group(function () {
-    Route::get('/', [TaskController::class, 'index']);
+    Route::get('/index', [TaskController::class, 'index']);
     Route::get('/{id}', [TaskController::class, 'show']);
     Route::post('/', [TaskController::class, 'store']);
     Route::put('/{id}', [TaskController::class, 'update']);
@@ -32,6 +32,7 @@ Route::prefix('task')->group(function () {
     Route::post('/{id}/comments', [TaskCommentController::class, 'store']);
     Route::get('/{id}/comments', [TaskCommentController::class, 'index']);
     Route::put('/comments/{commentId}', [TaskCommentController::class, 'update']);
+    Route::delete('/comments/{commentId}', [TaskCommentController::class, 'destroy']);
 })->middleware('auth:sanctum');
 
 Route::post('/login', [AuthController::class, 'login']);
