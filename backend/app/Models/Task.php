@@ -15,4 +15,19 @@ class Task extends Model
     {
         return $this->hasMany(TaskComment::class);
     }
+
+    public function assignee()
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
+    }
+
+    protected $fillable = [
+        'title',
+        'description',
+        'project_id',
+        'status',
+        'assigned_to',
+        'priority',
+        'estimated_hours',
+    ];
 }

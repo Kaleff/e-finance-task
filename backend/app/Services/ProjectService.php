@@ -3,11 +3,11 @@
 namespace App\Services;
 
 use App\Models\Project;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ProjectService
 {
-    public function getProjects($filters = [], $page = 1): Collection
+    public function getProjects($filters = [], $perPage = 10): LengthAwarePaginator
     {
         $query = Project::query();
 
@@ -27,14 +27,43 @@ class ProjectService
             }
         }
 
-        $query->skip(($page - 1) * 10)->take(10);
-
-        return $query->with('tasks')->get();
+        return $query->withCount([
+            'tasks',
+            'tasks as completed_tasks_count' => function ($query) {
+                $query->where('status', 'done');
+            }
+        ])->paginate($perPage);
     }
 
-    public function getProjectById($id): Project|null
+    public function getProjectById($id, $perPage = 100): array|null
     {
-        return Project::with('tasks')->find($id);
+        $project = Project::find($id);
+
+        if (!$project) {
+            return null;
+        }
+
+        $tasks = $project->tasks()->withCount('comments')->paginate($perPage);
+
+        return [
+            'id' => $project->id,
+            'name' => $project->name,
+            'description' => $project->description,
+            'status' => $project->status,
+            'owner_id' => $project->owner_id,
+            'deadline' => $project->deadline,
+            'created_at' => $project->created_at,
+            'updated_at' => $project->updated_at,
+            'tasks' => $tasks->items(),
+            'tasks_pagination' => [
+                'current_page' => $tasks->currentPage(),
+                'last_page' => $tasks->lastPage(),
+                'per_page' => $tasks->perPage(),
+                'total' => $tasks->total(),
+                'from' => $tasks->firstItem(),
+                'to' => $tasks->lastItem(),
+            ]
+        ];
     }
 
     public function createProject(array $data): Project

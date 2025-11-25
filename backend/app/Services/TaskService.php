@@ -5,10 +5,11 @@ namespace App\Services;
 use App\Models\Task;
 use App\Models\TaskComment;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class TaskService
 {
-    public function getTasks($filters = [], $page = 1): Collection
+    public function getTasks($filters = [], $perPage = 20): LengthAwarePaginator
     {
         $query = Task::query();
 
@@ -28,14 +29,44 @@ class TaskService
             $query->where('project_id', $filters['project_id']);
         }
 
-        $query->skip(($page - 1) * 10)->take(10);
-
-        return $query->with('comments')->get();
+        return $query->withCount('comments')->paginate($perPage);
     }
 
-    public function getTaskById($id): Task|null
+    public function getTaskById($id, $perPage = 10): array|null
     {
-        return Task::with('comments')->find($id);
+        $task = Task::find($id);
+
+        if(!$task) {
+            return null;
+        }
+
+        $comments = $task->comments()->paginate($perPage);
+        $assignee = $task->assignee()->first();
+
+        return [
+            'id' => $task->id,
+            'title' => $task->title,
+            'description' => $task->description,
+            'project_id' => $task->project_id,
+            'status' => $task->status,
+            'assigned_to' => $task->assigned_to,
+            'priority' => $task->priority,
+            'estimated_hours' => $task->estimated_hours,
+            'created_at' => $task->created_at,
+            'updated_at' => $task->updated_at,
+            'comments' => $comments->items(),
+            'comments_pagination' => [
+                'current_page' => $comments->currentPage(),
+                'last_page' => $comments->lastPage(),
+                'per_page' => $comments->perPage(),
+                'total' => $comments->total(),
+            ],
+            'assignee' => [
+                'id' => $assignee?->id,
+                'name' => $assignee?->name,
+                'email' => $assignee?->email,
+            ],
+        ];
     }
 
     public function createTask(array $data): Task

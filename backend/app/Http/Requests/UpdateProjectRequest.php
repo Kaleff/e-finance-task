@@ -15,6 +15,16 @@ class UpdateProjectRequest extends FormRequest
     }
 
     /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'id' => $this->route('id')
+        ]);
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
@@ -25,7 +35,6 @@ class UpdateProjectRequest extends FormRequest
             'id' => 'required|exists:projects,id',
             'name' => 'sometimes|string|max:255',
             'description' => 'nullable|string',
-            // 'owner_id' => 'sometimes|exists:users,id',
             'status' => 'sometimes|in:planned,in_progress,completed,archived',
             'deadline' => 'nullable|date',
         ];

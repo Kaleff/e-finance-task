@@ -13,21 +13,16 @@ export const useApi = () => {
    * @returns {Promise} - API response
    */
   const get = async (endpoint, params = {}) => {
-    try {
-      const { data, error } = await useFetch(`${baseURL}${endpoint}`, {
+   try {
+      const response = await $fetch(`${baseURL}${endpoint}`, {
         method: 'GET',
         params,
         headers: getHeaders(),
       })
-
-      if (error.value) {
-        throw new Error(error.value.message || 'Failed to fetch data')
-      }
-
-      return data.value
-    } catch (err) {
-      handleError(err)
-      throw err
+      return response
+    } catch (error) {
+      const errorMessage = error.data?.message || error.message || 'Failed to retrieve resource'
+      throw new Error(errorMessage)
     }
   }
 
@@ -39,20 +34,15 @@ export const useApi = () => {
    */
   const post = async (endpoint, body = {}) => {
     try {
-      const { data, error } = await useFetch(`${baseURL}${endpoint}`, {
+      const response = await $fetch(`${baseURL}${endpoint}`, {
         method: 'POST',
         body,
         headers: getHeaders(),
       })
-
-      if (error.value) {
-        throw new Error(error.value.message || 'Failed to create resource')
-      }
-
-      return data.value
-    } catch (err) {
-      handleError(err)
-      throw err
+      return response
+    } catch (error) {
+      const errorMessage = error.data?.message || error.message || 'Failed to create resource'
+      throw new Error(errorMessage)
     }
   }
 
@@ -64,20 +54,15 @@ export const useApi = () => {
    */
   const put = async (endpoint, body = {}) => {
     try {
-      const { data, error } = await useFetch(`${baseURL}${endpoint}`, {
+      const response = await $fetch(`${baseURL}${endpoint}`, {
         method: 'PUT',
         body,
         headers: getHeaders(),
       })
-
-      if (error.value) {
-        throw new Error(error.value.message || 'Failed to update resource')
-      }
-
-      return data.value
-    } catch (err) {
-      handleError(err)
-      throw err
+      return response
+    } catch (error) {
+      const errorMessage = error.data?.message || error.message || 'Failed to update resource'
+      throw new Error(errorMessage)
     }
   }
 
@@ -89,20 +74,15 @@ export const useApi = () => {
    */
   const patch = async (endpoint, body = {}) => {
     try {
-      const { data, error } = await useFetch(`${baseURL}${endpoint}`, {
+      const response = await $fetch(`${baseURL}${endpoint}`, {
         method: 'PATCH',
         body,
         headers: getHeaders(),
       })
-
-      if (error.value) {
-        throw new Error(error.value.message || 'Failed to update resource')
-      }
-
-      return data.value
-    } catch (err) {
-      handleError(err)
-      throw err
+      return response
+    } catch (error) {
+      const errorMessage = error.data?.message || error.message || 'Failed to update resource'
+      throw new Error(errorMessage)
     }
   }
 
@@ -113,19 +93,14 @@ export const useApi = () => {
    */
   const del = async (endpoint) => {
     try {
-      const { data, error } = await useFetch(`${baseURL}${endpoint}`, {
+      const response = await $fetch(`${baseURL}${endpoint}`, {
         method: 'DELETE',
         headers: getHeaders(),
       })
-
-      if (error.value) {
-        throw new Error(error.value.message || 'Failed to delete resource')
-      }
-
-      return data.value
-    } catch (err) {
-      handleError(err)
-      throw err
+      return response
+    } catch (error) {
+      const errorMessage = error.data?.message || error.message || 'Failed to delete resource'
+      throw new Error(errorMessage)
     }
   }
 
@@ -139,10 +114,10 @@ export const useApi = () => {
       'Accept': 'application/json',
     }
 
-    // Add authorization token if available
-    const token = useCookie('auth_token')
-    if (token.value) {
-      headers['Authorization'] = `Bearer ${token.value}`
+    // Add authorization token from auth store
+    const authStore = useAuthStore()
+    if (authStore.token) {
+      headers['Authorization'] = `Bearer ${authStore.token}`
     }
 
     return headers

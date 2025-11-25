@@ -13,6 +13,12 @@ class TaskComment extends Model
 
     public function author()
     {
-        return $this->belongsTo(User::class, 'author_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
+
+    protected $fillable = [
+        'task_id',
+        'user_id',
+        'comment',
+    ];
 }

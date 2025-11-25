@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\IndexProjectRequest;
+use App\Http\Requests\ShowRequest;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Services\ProjectService;
@@ -14,20 +15,30 @@ class ProjectController extends Controller
     public function index(IndexProjectRequest $request)
     {
         $filters = $request->validated();
-        $page = $filters['page'] ?? 1;
-        $projects = $this->projectService->getProjects(filters: $filters, page: $page);
+        $perPage = $filters['per_page'] ?? 10;
+        unset($filters['per_page']); // Remove per_page from filters
+        $filters['deadline_passed'] = isset($filters['deadline_passed']) ? filter_var($filters['deadline_passed'], FILTER_VALIDATE_BOOLEAN) : null;
+
+        $projects = $this->projectService->getProjects(filters: $filters, perPage: $perPage);
         return response()->json($projects);
     }
 
-    public function show($id)
+    public function show(ShowRequest $request)
     {
-        $project = $this->projectService->getProjectById($id);
+        $data = $request->validated();
+        $id = $data['id'];
+        $perPage = $data['per_page'] ?? 100;
+        $project = $this->projectService->getProjectById($id, $perPage);
+        if(!$project) {
+            return response()->json(['message' => 'Project not found'], 404);
+        }
         return response()->json($project);
     }
 
     public function store(StoreProjectRequest $request)
     {
         $validated = $request->validated();
+        $validated['owner_id'] = auth('sanctum')->id();
         if($validated) {
             $this->projectService->createProject($validated);
         }
@@ -38,7 +49,10 @@ class ProjectController extends Controller
     {
         $validated = $request->validated();
         if($validated) {
-            $this->projectService->updateProject($id, $validated);
+            $project = $this->projectService->updateProject($id, $validated);
+            if(!$project) {
+                return response()->json(['message' => 'Project not found'], 404);
+            }
         }
         return response()->json(['message' => 'Project updated successfully']);
     }
