@@ -32,9 +32,35 @@ class TaskService
         return $query->withCount('comments')->paginate($perPage);
     }
 
-    public function getTaskById($id): Task|null
+    public function getTaskById($id, $perPage = 10): array|null
     {
-        return Task::with('comments')->find($id);
+        $task = Task::find($id);
+
+        if(!$task) {
+            return null;
+        }
+
+        $comments = $task->comments()->paginate($perPage);
+
+        return [
+            'id' => $task->id,
+            'title' => $task->title,
+            'description' => $task->description,
+            'project_id' => $task->project_id,
+            'status' => $task->status,
+            'assigned_to' => $task->assigned_to,
+            'priority' => $task->priority,
+            'estimated_hours' => $task->estimated_hours,
+            'created_at' => $task->created_at,
+            'updated_at' => $task->updated_at,
+            'comments' => $comments->items(),
+            'comments_pagination' => [
+                'current_page' => $comments->currentPage(),
+                'last_page' => $comments->lastPage(),
+                'per_page' => $comments->perPage(),
+                'total' => $comments->total(),
+            ],
+        ];
     }
 
     public function createTask(array $data): Task

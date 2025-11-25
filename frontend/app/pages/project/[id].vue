@@ -345,7 +345,7 @@ const handleCreateTask = () => {
 }
 
 const navigateToTask = (taskId) => {
-  router.push(`/tasks/${taskId}`)
+  router.push(`/task/${taskId}`)
 }
 
 // Computed properties

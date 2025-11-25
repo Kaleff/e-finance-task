@@ -21,7 +21,8 @@ class TaskController extends Controller
 
     public function show($id)
     {
-        $task = $this->taskService->getTaskById($id);
+        $perPage = request()->get('per_page', 10);
+        $task = $this->taskService->getTaskById($id, $perPage);
         return response()->json($task);
     }
 
