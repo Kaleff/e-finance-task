@@ -28,16 +28,12 @@ export const useAuth = () => {
    * @returns {Promise} - Registration response
    */
   const register = async (userData) => {
-    try {
-      const response = await api.post('/register', userData)
+    const response = await api.post('/register', userData)
       
-      if (response.access_token) {
-        authStore.setToken(response.access_token)
-        authStore.setUser(response.user)
-        return response
-      }
-    } catch (error) {
-      throw error
+    if (response.access_token) {
+      authStore.setToken(response.access_token)
+      authStore.setUser(response.user)
+      return response
     }
   }
 
