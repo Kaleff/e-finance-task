@@ -233,8 +233,9 @@ definePageMeta({
 })
 
 const route = useRoute()
+const { fetchProject } = useProjects()
+const { fetchTasks: fetchTasksApi } = useTasks()
 const router = useRouter()
-const api = useApi()
 
 const project = ref(null)
 const tasks = ref([])
@@ -266,7 +267,7 @@ const loadProject = async () => {
       per_page: 20
     }
     
-    const response = await api.get(`/projects/${route.params.id}`, params)
+    const response = await fetchProject(route.params.id, params)
     
     project.value = {
       id: response.id,
@@ -301,18 +302,21 @@ const loadTasks = async (page = 1) => {
   error.value = null
   
   try {
-    const params = {
-      project_id: route.params.id,
-      page,
-      per_page: 20
+    const filters = {
+      project_id: route.params.id
     }
     
     // Add status filter if selected
     if (statusFilter.value) {
-      params.status = statusFilter.value
+      filters.status = statusFilter.value
     }
     
-    const response = await api.get('/tasks/index', params)
+    const paginationParams = {
+      page,
+      per_page: 20
+    }
+    
+    const response = await fetchTasksApi(filters, paginationParams)
     
     tasks.value = response.data || []
     tasksPagination.value = {

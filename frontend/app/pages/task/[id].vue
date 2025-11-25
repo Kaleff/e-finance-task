@@ -264,8 +264,7 @@ const route = useRoute()
 const router = useRouter()
 const api = useApi()
 const uiStore = useUiStore()
-const { deleteTask: deleteTaskApi } = useTasks()
-
+const { deleteTask, fetchTask } = useTasks()
 const task = ref(null)
 const comments = ref([])
 const commentsPagination = ref({
@@ -312,7 +311,7 @@ const loadTask = async (commentsPage = 1) => {
       per_page: 10
     }
 
-    const response = await api.get(`/tasks/${route.params.id}`, params)
+    const response = await fetchTask(route.params.id, params)
 
     task.value = {
       id: response.id,
@@ -428,7 +427,7 @@ const handleDelete = async () => {
   deleting.value = true
   
   try {
-    await deleteTaskApi(route.params.id)
+    await deleteTask(route.params.id)
     
     uiStore.addNotification({
       type: 'success',

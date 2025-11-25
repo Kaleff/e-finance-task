@@ -25,7 +25,7 @@ export const useTasks = () => {
         per_page: paginationParams.per_page || 20,
       }
 
-      const response = await api.get('/tasks/index', params)
+      const response = await api.get('/tasks', params)
       
       tasks.value = response.data || response
       pagination.value = {
@@ -47,12 +47,13 @@ export const useTasks = () => {
   /**
    * Fetch a single task by ID with comments
    * @param {number} id - Task ID
+   * @param {object} paginationParams - Additional query parameters
    * @returns {Promise} - Task data
    */
-  const fetchTask = async (id) => {
+  const fetchTask = async (id, paginationParams) => {
     try {
       loading.value = true
-      const task = await api.get(`/tasks/${id}`)
+      const task = await api.get(`/tasks/${id}`, paginationParams)
       currentTask.value = task
       return task
     } catch (error) {

@@ -47,12 +47,13 @@ export const useProjects = () => {
   /**
    * Fetch a single project by ID with related tasks
    * @param {number} id - Project ID
+   * @param {object} params - Additional query parameters
    * @returns {Promise} - Project data
    */
-  const fetchProject = async (id) => {
+  const fetchProject = async (id, params = {}) => {
     try {
       loading.value = true
-      const project = await api.get(`/projects/${id}`)
+      const project = await api.get(`/projects/${id}`, params)
       currentProject.value = project
       return project
     } catch (error) {
