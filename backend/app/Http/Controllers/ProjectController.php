@@ -29,6 +29,9 @@ class ProjectController extends Controller
         $id = $data['id'];
         $perPage = $data['per_page'] ?? 100;
         $project = $this->projectService->getProjectById($id, $perPage);
+        if(!$project) {
+            return response()->json(['message' => 'Project not found'], 404);
+        }
         return response()->json($project);
     }
 
@@ -46,7 +49,10 @@ class ProjectController extends Controller
     {
         $validated = $request->validated();
         if($validated) {
-            $this->projectService->updateProject($id, $validated);
+            $project = $this->projectService->updateProject($id, $validated);
+            if(!$project) {
+                return response()->json(['message' => 'Project not found'], 404);
+            }
         }
         return response()->json(['message' => 'Project updated successfully']);
     }

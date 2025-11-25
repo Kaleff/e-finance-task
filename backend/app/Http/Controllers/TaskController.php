@@ -28,6 +28,9 @@ class TaskController extends Controller
         $id = $data['id'];
         $perPage = $data['per_page'] ?? 10;
         $task = $this->taskService->getTaskById($id, $perPage);
+        if(!$task) {
+            return response()->json(['message' => 'Task not found'], 404);
+        }
         return response()->json($task);
     }
 
@@ -44,7 +47,11 @@ class TaskController extends Controller
     {
         $validated = $request->validated();
         if($validated) {
-            $this->taskService->update($id, $validated);
+            $task = $this->taskService->update($id, $validated);
+
+            if(!$task) {
+                return response()->json(['message' => 'Task not found'], 404);
+            }
         }
         return response()->json(['message' => 'Task updated successfully']);
     }
@@ -53,7 +60,10 @@ class TaskController extends Controller
     {
         $validated = $request->validated();
         $status = $validated['status'];
-        $this->taskService->update($id, ['status' => $status]);
+        $task = $this->taskService->update($id, ['status' => $status]);
+        if(!$task) {
+            return response()->json(['message' => 'Task not found'], 404);
+        }
         return response()->json(['message' => 'Task status updated successfully']);
     }
 
@@ -61,7 +71,10 @@ class TaskController extends Controller
     {
         $validated = $request->validated();
         $priority = $validated['priority'];
-        $this->taskService->update($id, ['priority' => $priority]);
+        $task = $this->taskService->update($id, ['priority' => $priority]);
+        if(!$task) {
+            return response()->json(['message' => 'Task not found'], 404);
+        }
         return response()->json(['message' => 'Task priority updated successfully']);
     }
 
