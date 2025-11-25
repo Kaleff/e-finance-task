@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\IndexTaskRequest;
 use App\Http\Requests\StoreTaskRequest;
+use App\Http\Requests\UpdateTaskPriorityRequest;
 use App\Http\Requests\UpdateTaskRequest;
+use App\Http\Requests\UpdateTaskStatusRequest;
 use App\Services\TaskService;
 
 class TaskController extends Controller
@@ -44,10 +46,20 @@ class TaskController extends Controller
         return response()->json(['message' => 'Task updated successfully']);
     }
 
-    public function updateStatus($id, $status)
+    public function updateStatus(UpdateTaskStatusRequest $request, $id)
     {
+        $validated = $request->validated();
+        $status = $validated['status'];
         $this->taskService->update($id, ['status' => $status]);
         return response()->json(['message' => 'Task status updated successfully']);
+    }
+
+    public function updatePriority(UpdateTaskPriorityRequest $request, $id)
+    {
+        $validated = $request->validated();
+        $priority = $validated['priority'];
+        $this->taskService->update($id, ['priority' => $priority]);
+        return response()->json(['message' => 'Task priority updated successfully']);
     }
 
     public function destroy($id)
