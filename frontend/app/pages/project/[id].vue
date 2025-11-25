@@ -69,7 +69,7 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Loading State -->
       <div v-if="loading" class="flex justify-center items-center py-12">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#f53003] dark:border-[#FF4433]"></div>
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#f53003] dark:border-[#FF4433]"/>
       </div>
 
       <!-- Error State -->
@@ -118,7 +118,7 @@
         <!-- Empty State -->
         <div v-if="!tasks.length" class="text-center py-12 bg-white dark:bg-[#0a0a0a] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm">
           <svg class="mx-auto h-12 w-12 text-[#1b1b18]/40 dark:text-[#EDEDEC]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
           </svg>
           <h3 class="mt-2 text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC]">No tasks found</h3>
           <p class="mt-1 text-sm text-[#1b1b18]/70 dark:text-[#EDEDEC]/70">Get started by creating a new task.</p>
@@ -180,15 +180,15 @@
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="flex items-center gap-1 text-sm text-[#1b1b18]/60 dark:text-[#EDEDEC]/60">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                     </svg>
                     <span>{{ task.comments_count || 0 }}</span>
                   </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                   <button
-                    @click.stop="navigateToTask(task.id)"
                     class="text-[#f53003] dark:text-[#FF4433] hover:underline"
+                    @click.stop="navigateToTask(task.id)"
                   >
                     View
                   </button>
@@ -215,7 +215,6 @@
               <button
                 v-for="(page, index) in visiblePages"
                 :key="`page-${index}`"
-                @click="page !== '...' ? loadPage(page) : null"
                 :disabled="page === '...'"
                 :class="[
                   'px-3 py-1 text-sm rounded-sm transition-colors',
@@ -225,6 +224,7 @@
                       ? 'bg-[#f53003] dark:bg-[#FF4433] text-white'
                       : 'bg-white dark:bg-[#0a0a0a] border border-[#e3e3e0] dark:border-[#3E3E3A] text-[#1b1b18] dark:text-[#EDEDEC] hover:border-[#f53003] dark:hover:border-[#FF4433]'
                 ]"
+                @click="page !== '...' ? loadPage(page) : null"
               >
                 {{ page }}
               </button>

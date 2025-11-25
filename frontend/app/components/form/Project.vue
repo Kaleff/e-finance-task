@@ -1,16 +1,16 @@
 <template>
   <form @submit.prevent="handleSubmit">
     <!-- Hidden Project ID for Edit Mode -->
-    <input v-if="props.isEdit" type="hidden" :value="props.projectId" />
+    <input v-if="props.isEdit" type="hidden" :value="props.projectId" >
 
     <!-- Project Name -->
     <div class="mb-6">
       <CommonBaseInput
-        :modelValue="props.form.name"
-        @update:modelValue="updateField('name', $event)"
+        :model-value="props.form.name"
         label="Project Name"
         placeholder="Enter project name"
         required
+        @update:model-value="updateField('name', $event)"
       />
     </div>
 
@@ -22,19 +22,19 @@
       <textarea
         id="description"
         :value="props.form.description"
-        @input="updateField('description', $event.target.value)"
         rows="4"
         class="w-full px-4 py-2 border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm bg-white dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] focus:outline-none focus:ring-2 focus:ring-[#f53003] dark:focus:ring-[#FF4433]"
         placeholder="Enter project description"
-      ></textarea>
+        @input="updateField('description', $event.target.value)"
+      />
     </div>
 
     <!-- Status -->
     <div class="mb-6">
       <CommonBaseSelect
-        :modelValue="props.form.status"
-        @update:modelValue="updateField('status', $event)"
+        :model-value="props.form.status"
         label="Status"
+        @update:model-value="updateField('status', $event)"
       >
         <option value="planned">Planned</option>
         <option value="in_progress">In Progress</option>
@@ -46,10 +46,10 @@
     <!-- Deadline -->
     <div class="mb-6">
       <CommonBaseInput
-        :modelValue="props.form.deadline"
-        @update:modelValue="updateField('deadline', $event)"
+        :model-value="props.form.deadline"
         type="date"
         label="Deadline"
+        @update:model-value="updateField('deadline', $event)"
       />
     </div>
 
