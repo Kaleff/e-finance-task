@@ -83,10 +83,9 @@
           <div class="flex gap-2">
             <CommonBaseSelect
               v-model="statusFilter"
-              size="sm"
-              placeholder="All Status"
               @change="handleFilterChange"
             >
+              <option value="">All Status</option>
               <option value="todo">To Do</option>
               <option value="in_progress">In Progress</option>
               <option value="done">Done</option>
@@ -245,14 +244,15 @@ onMounted(async () => {
   await loadProject()
 })
 
-const loadProject = async (page = 1) => {
+const loadProject = async () => {
   loading.value = true
   error.value = null
   
   try {
+    // Fetch project details with initial tasks (first page)
     const params = {
-      page,
-      per_page: 100
+      page: 1,
+      per_page: 20
     }
     
     const response = await api.get(`/projects/${route.params.id}`, params)
@@ -268,8 +268,16 @@ const loadProject = async (page = 1) => {
       updated_at: response.updated_at
     }
     
+    // Load initial tasks from project response
     tasks.value = response.tasks || []
-    tasksPagination.value = response.tasks_pagination || tasksPagination.value
+    tasksPagination.value = response.tasks_pagination || {
+      current_page: 1,
+      last_page: 1,
+      per_page: 20,
+      total: 0,
+      from: 1,
+      to: 0
+    }
   } catch (err) {
     error.value = err.message || 'Failed to load project'
   } finally {
@@ -277,17 +285,48 @@ const loadProject = async (page = 1) => {
   }
 }
 
+const loadTasks = async (page = 1) => {
+  loading.value = true
+  error.value = null
+  
+  try {
+    const params = {
+      project_id: route.params.id,
+      page,
+      per_page: 20
+    }
+    
+    // Add status filter if selected
+    if (statusFilter.value) {
+      params.status = statusFilter.value
+    }
+    
+    const response = await api.get('/tasks', params)
+    
+    tasks.value = response.data || []
+    tasksPagination.value = {
+      current_page: response.current_page || 1,
+      last_page: response.last_page || 1,
+      per_page: response.per_page || 20,
+      total: response.total || 0,
+      from: response.from || 0,
+      to: response.to || 0
+    }
+  } catch (err) {
+    console.error('Failed to load tasks:', err)
+    error.value = err.message || 'Failed to load tasks'
+  } finally {
+    loading.value = false
+  }
+}
+
 const loadPage = async (page) => {
-  await loadProject(page)
+  await loadTasks(page)
 }
 
 const handleFilterChange = () => {
-  // Filter tasks locally
-  if (statusFilter.value) {
-    tasks.value = tasks.value.filter(task => task.status === statusFilter.value)
-  } else {
-    loadProject(tasksPagination.value.current_page)
-  }
+  // Reset to page 1 when filter changes and load from API
+  loadTasks(1)
 }
 
 const handleCreateTask = () => {
@@ -300,10 +339,18 @@ const navigateToTask = (taskId) => {
 
 // Computed properties
 const completedTasksCount = computed(() => {
+  // If no filter applied, show from total
+  if (!statusFilter.value) {
+    return tasks.value.filter(t => t.status === 'done').length
+  }
   return tasks.value.filter(t => t.status === 'done').length
 })
 
 const inProgressTasksCount = computed(() => {
+  // If no filter applied, show from total
+  if (!statusFilter.value) {
+    return tasks.value.filter(t => t.status === 'in_progress').length
+  }
   return tasks.value.filter(t => t.status === 'in_progress').length
 })
 

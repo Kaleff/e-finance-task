@@ -5,10 +5,11 @@ namespace App\Services;
 use App\Models\Task;
 use App\Models\TaskComment;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class TaskService
 {
-    public function getTasks($filters = [], $page = 1): Collection
+    public function getTasks($filters = [], $page = 1, $perPage = 100): LengthAwarePaginator
     {
         $query = Task::query();
 
@@ -28,9 +29,7 @@ class TaskService
             $query->where('project_id', $filters['project_id']);
         }
 
-        $query->skip(($page - 1) * 10)->take(10);
-
-        return $query->with('comments')->get();
+        return $query->withCount('comments')->paginate($perPage);
     }
 
     public function getTaskById($id): Task|null
