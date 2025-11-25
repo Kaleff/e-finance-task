@@ -22,6 +22,7 @@ class Task extends Model
         'project_id',
         'status',
         'assigned_to',
-        'due_date',
+        'priority',
+        'estimated_hours',
     ];
 }
