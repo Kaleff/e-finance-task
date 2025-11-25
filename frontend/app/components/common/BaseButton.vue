@@ -24,7 +24,7 @@ const props = defineProps({
   variant: {
     type: String,
     default: 'primary',
-    validator: (value) => ['primary', 'secondary', 'outline', 'ghost'].includes(value)
+    validator: (value) => ['primary', 'secondary', 'outline', 'ghost', 'danger'].includes(value)
   },
   size: {
     type: String,
@@ -60,7 +60,8 @@ const buttonClasses = computed(() => {
     primary: 'text-white bg-[#f53003] dark:bg-[#FF4433] hover:bg-[#d42a02] dark:hover:bg-[#ff5544] focus:ring-[#f53003] dark:focus:ring-[#FF4433]',
     secondary: 'text-[#1b1b18] dark:text-[#EDEDEC] bg-white dark:bg-[#0a0a0a] border border-[#e3e3e0] dark:border-[#3E3E3A] hover:border-[#f53003] dark:hover:border-[#FF4433] focus:ring-[#f53003] dark:focus:ring-[#FF4433]',
     outline: 'text-[#f53003] dark:text-[#FF4433] border border-[#f53003] dark:border-[#FF4433] hover:bg-[#f53003]/10 dark:hover:bg-[#FF4433]/10 focus:ring-[#f53003] dark:focus:ring-[#FF4433]',
-    ghost: 'text-[#1b1b18] dark:text-[#EDEDEC] hover:bg-[#e3e3e0]/50 dark:hover:bg-[#3E3E3A]/50 focus:ring-[#e3e3e0] dark:focus:ring-[#3E3E3A]'
+    ghost: 'text-[#1b1b18] dark:text-[#EDEDEC] hover:bg-[#e3e3e0]/50 dark:hover:bg-[#3E3E3A]/50 focus:ring-[#e3e3e0] dark:focus:ring-[#3E3E3A]',
+    danger: 'text-white bg-red-600 dark:bg-red-700 hover:bg-red-700 dark:hover:bg-red-800 focus:ring-red-600 dark:focus:ring-red-700'
   }
   
   const widthClass = props.fullWidth ? 'w-full' : ''

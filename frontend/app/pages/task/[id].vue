@@ -21,6 +21,14 @@
             </p>
           </div>
           <div class="flex gap-3">
+            <CommonBaseButton 
+              variant="danger" 
+              size="sm" 
+              @click="showDeleteConfirm = true"
+              :disabled="deleting"
+            >
+              {{ deleting ? 'Deleting...' : 'Delete Task' }}
+            </CommonBaseButton>
             <NuxtLink :to="task?.project_id ? `/project/${task.project_id}` : '/project/list'">
               <CommonBaseButton variant="secondary" size="sm">
                 Back to Project
@@ -29,8 +37,41 @@
           </div>
         </div>
 
+        <!-- Task Management -->
+        <div v-if="task" class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-white dark:bg-[#0a0a0a] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm p-4">
+            <label class="block text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC] mb-2">
+              Status
+            </label>
+            <CommonBaseSelect
+              v-model="selectedStatus"
+              @update:modelValue="handleStatusChange"
+              :disabled="updating"
+            >
+              <option v-for="option in statusOptions" :key="option.value" :value="option.value">
+                {{ option.label }}
+              </option>
+            </CommonBaseSelect>
+          </div>
+
+          <div class="bg-white dark:bg-[#0a0a0a] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm p-4">
+            <label class="block text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC] mb-2">
+              Priority
+            </label>
+            <CommonBaseSelect
+              v-model="selectedPriority"
+              @update:modelValue="handlePriorityChange"
+              :disabled="updating"
+            >
+              <option v-for="option in priorityOptions" :key="option.value" :value="option.value">
+                {{ option.label }}
+              </option>
+            </CommonBaseSelect>
+          </div>
+        </div>
+
         <!-- Task Stats -->
-        <div v-if="task" class="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div v-if="task" class="mt-4 grid grid-cols-1 md:grid-cols-4 gap-4">
           <div class="bg-white dark:bg-[#0a0a0a] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm p-4">
             <div class="text-sm text-[#1b1b18]/60 dark:text-[#EDEDEC]/60">Project ID</div>
             <div class="text-xl font-medium text-[#1b1b18] dark:text-[#EDEDEC] mt-1">
@@ -76,6 +117,36 @@
 
       <!-- Task Details -->
       <div v-else-if="task" class="space-y-8">
+        <!-- Delete Confirmation Modal -->
+        <div v-if="showDeleteConfirm" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div class="bg-white dark:bg-[#0a0a0a] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm p-6 max-w-md mx-4">
+            <h3 class="text-lg font-medium text-[#1b1b18] dark:text-[#EDEDEC] mb-4">
+              Delete Task
+            </h3>
+            <p class="text-sm text-[#1b1b18]/70 dark:text-[#EDEDEC]/70 mb-6">
+              Are you sure you want to delete "{{ task.title }}"? This action cannot be undone.
+            </p>
+            <div class="flex gap-3 justify-end">
+              <CommonBaseButton 
+                variant="secondary" 
+                size="sm" 
+                @click="showDeleteConfirm = false"
+                :disabled="deleting"
+              >
+                Cancel
+              </CommonBaseButton>
+              <CommonBaseButton 
+                variant="danger" 
+                size="sm" 
+                @click="handleDelete"
+                :disabled="deleting"
+              >
+                {{ deleting ? 'Deleting...' : 'Delete' }}
+              </CommonBaseButton>
+            </div>
+          </div>
+        </div>
+
         <!-- Comments Section -->
         <div class="bg-white dark:bg-[#0a0a0a] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm p-6">
           <div class="flex justify-between items-center mb-6">
@@ -193,6 +264,7 @@ const route = useRoute()
 const router = useRouter()
 const api = useApi()
 const uiStore = useUiStore()
+const { deleteTask: deleteTaskApi } = useTasks()
 
 const task = ref(null)
 const comments = ref([])
@@ -207,6 +279,23 @@ const error = ref(null)
 const showAddComment = ref(false)
 const newComment = ref('')
 const addingComment = ref(false)
+const updating = ref(false)
+const deleting = ref(false)
+const showDeleteConfirm = ref(false)
+const selectedStatus = ref('')
+const selectedPriority = ref('')
+
+const statusOptions = [
+  { value: 'todo', label: 'To Do' },
+  { value: 'in_progress', label: 'In Progress' },
+  { value: 'done', label: 'Done' }
+]
+
+const priorityOptions = [
+  { value: 'low', label: 'Low' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'high', label: 'High' }
+]
 
 // Load task data
 onMounted(async () => {
@@ -237,6 +326,10 @@ const loadTask = async (commentsPage = 1) => {
       created_at: response.created_at,
       updated_at: response.updated_at
     }
+
+    // Initialize select values
+    selectedStatus.value = response.status || 'todo'
+    selectedPriority.value = response.priority || 'medium'
 
     comments.value = response.comments || []
     commentsPagination.value = response.comments_pagination || commentsPagination.value
@@ -278,6 +371,79 @@ const handleAddComment = async () => {
     })
   } finally {
     addingComment.value = false
+  }
+}
+
+const handleStatusChange = async (newStatus) => {
+  updating.value = true
+  
+  try {
+    await api.patch(`/task/${route.params.id}/status`, { status: newStatus })
+    
+    // Update task object
+    task.value.status = newStatus
+    
+    uiStore.addNotification({
+      type: 'success',
+      message: 'Task status updated successfully!'
+    })
+  } catch (err) {
+    uiStore.addNotification({
+      type: 'error',
+      message: err.message || 'Failed to update task status'
+    })
+    // Revert on error
+    await loadTask(commentsPagination.value.current_page)
+  } finally {
+    updating.value = false
+  }
+}
+
+const handlePriorityChange = async (newPriority) => {
+  updating.value = true
+  
+  try {
+    await api.patch(`/task/${route.params.id}/priority`, { priority: newPriority })
+    
+    // Update task object
+    task.value.priority = newPriority
+    
+    uiStore.addNotification({
+      type: 'success',
+      message: 'Task priority updated successfully!'
+    })
+  } catch (err) {
+    uiStore.addNotification({
+      type: 'error',
+      message: err.message || 'Failed to update task priority'
+    })
+    // Revert on error
+    await loadTask(commentsPagination.value.current_page)
+  } finally {
+    updating.value = false
+  }
+}
+
+const handleDelete = async () => {
+  deleting.value = true
+  
+  try {
+    await deleteTaskApi(route.params.id)
+    
+    uiStore.addNotification({
+      type: 'success',
+      message: 'Task deleted successfully!'
+    })
+    
+    // Redirect to project page
+    router.push(`/project/${task.value.project_id}`)
+  } catch (err) {
+    uiStore.addNotification({
+      type: 'error',
+      message: err.message || 'Failed to delete task'
+    })
+    showDeleteConfirm.value = false
+    deleting.value = false
   }
 }
 
