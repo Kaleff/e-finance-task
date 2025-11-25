@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\IndexProjectRequest;
+use App\Http\Requests\ShowRequest;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Services\ProjectService;
@@ -22,9 +23,11 @@ class ProjectController extends Controller
         return response()->json($projects);
     }
 
-    public function show($id)
+    public function show(ShowRequest $request)
     {
-        $perPage = request()->get('per_page', 100);
+        $data = $request->validated();
+        $id = $data['id'];
+        $perPage = $data['per_page'] ?? 100;
         $project = $this->projectService->getProjectById($id, $perPage);
         return response()->json($project);
     }

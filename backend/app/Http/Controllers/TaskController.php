@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\IndexTaskRequest;
+use App\Http\Requests\ShowRequest;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskPriorityRequest;
 use App\Http\Requests\UpdateTaskRequest;
@@ -21,9 +22,11 @@ class TaskController extends Controller
         return response()->json($tasks);
     }
 
-    public function show($id)
+    public function show(ShowRequest $request)
     {
-        $perPage = request()->get('per_page', 10);
+        $data = $request->validated();
+        $id = $data['id'];
+        $perPage = $data['per_page'] ?? 10;
         $task = $this->taskService->getTaskById($id, $perPage);
         return response()->json($task);
     }
