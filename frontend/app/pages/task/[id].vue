@@ -22,6 +22,14 @@
           </div>
           <div class="flex gap-3">
             <CommonBaseButton 
+              v-if="!isEditMode"
+              size="sm" 
+              @click="toggleEditMode"
+            >
+              Edit Task
+            </CommonBaseButton>
+            <CommonBaseButton 
+              v-if="!isEditMode"
               variant="danger" 
               size="sm" 
               @click="showDeleteConfirm = true"
@@ -113,6 +121,27 @@
       <!-- Error State -->
       <div v-else-if="error" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-sm p-6">
         <p class="text-red-600 dark:text-red-400">{{ error }}</p>
+      </div>
+
+      <!-- Edit Form -->
+      <div v-if="task && isEditMode" class="bg-white dark:bg-[#0a0a0a] rounded-sm shadow-sm border border-[#e3e3e0] dark:border-[#3E3E3A] p-6 mb-8">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-medium text-[#1b1b18] dark:text-[#EDEDEC]">Edit Task</h2>
+          <CommonBaseButton variant="secondary" size="sm" @click="toggleEditMode">
+            Cancel
+          </CommonBaseButton>
+        </div>
+        
+        <FormTask
+          v-model:form="formData"
+          :loading="loading"
+          :error="error"
+          :is-edit="true"
+          :task-id="route.params.id"
+          :project-id="task.project_id"
+          :project-name="'Project #' + task.project_id"
+          @submit="handleUpdateTask"
+        />
       </div>
 
       <!-- Task Details -->
@@ -264,8 +293,9 @@ const route = useRoute()
 const router = useRouter()
 const api = useApi()
 const uiStore = useUiStore()
-const { deleteTask, fetchTask } = useTasks()
+const { deleteTask, fetchTask, updateTask } = useTasks()
 const task = ref(null)
+const isEditMode = computed(() => route.query.mode === 'edit')
 const comments = ref([])
 const commentsPagination = ref({
   current_page: 1,
@@ -283,6 +313,14 @@ const deleting = ref(false)
 const showDeleteConfirm = ref(false)
 const selectedStatus = ref('')
 const selectedPriority = ref('')
+
+const formData = ref({
+  title: '',
+  description: '',
+  status: 'todo',
+  priority: 'medium',
+  estimated_hours: null
+})
 
 const statusOptions = [
   { value: 'todo', label: 'To Do' },
@@ -329,6 +367,15 @@ const loadTask = async (commentsPage = 1) => {
     // Initialize select values
     selectedStatus.value = response.status || 'todo'
     selectedPriority.value = response.priority || 'medium'
+
+    // Populate form data for edit mode
+    formData.value = {
+      title: response.title || '',
+      description: response.description || '',
+      status: response.status || 'todo',
+      priority: response.priority || 'medium',
+      estimated_hours: response.estimated_hours || null
+    }
 
     comments.value = response.comments || []
     commentsPagination.value = response.comments_pagination || commentsPagination.value
@@ -443,6 +490,41 @@ const handleDelete = async () => {
     })
     showDeleteConfirm.value = false
     deleting.value = false
+  }
+}
+
+const toggleEditMode = () => {
+  if (isEditMode.value) {
+    router.push(`/task/${route.params.id}`)
+  } else {
+    router.push(`/task/${route.params.id}?mode=edit`)
+  }
+}
+
+const handleUpdateTask = async (formDataWithId) => {
+  loading.value = true
+  error.value = null
+
+  try {
+    await updateTask(route.params.id, formDataWithId)
+    
+    uiStore.addNotification({
+      type: 'success',
+      message: 'Task updated successfully!'
+    })
+    
+    // Reload task data and exit edit mode
+    await loadTask()
+    router.push(`/task/${route.params.id}`)
+  } catch (err) {
+    error.value = err.message || 'Failed to update task'
+    
+    uiStore.addNotification({
+      type: 'error',
+      message: err.message || 'Failed to update task'
+    })
+  } finally {
+    loading.value = false
   }
 }
 

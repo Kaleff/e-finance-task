@@ -87,7 +87,7 @@
               :disabled="props.loading"
               class="flex-1"
             >
-              {{ props.loading ? 'Creating...' : 'Create Task' }}
+              {{ props.loading ? (props.isEdit ? 'Updating...' : 'Creating...') : (props.isEdit ? 'Update Task' : 'Create Task') }}
             </CommonBaseButton>
             <NuxtLink :to="props.projectId ? `/project/${props.projectId}` : '/project/list'" class="flex-1">
               <CommonBaseButton variant="secondary" class="w-full">
@@ -119,6 +119,14 @@ const props = defineProps({
   projectName: {
     type: String,
     default: ''
+  },
+  isEdit: {
+    type: Boolean,
+    default: false
+  },
+  taskId: {
+    type: [String, Number],
+    default: null
   }
 })
 
@@ -136,6 +144,11 @@ const updateField = (field, value) => {
 }
 
 const handleSubmit = () => {
-  emit('submit')
+  // Add task ID to form data for edit mode
+  const formData = props.isEdit && props.taskId 
+    ? { ...props.form, id: props.taskId }
+    : props.form
+  
+  emit('submit', formData)
 }
 </script>
