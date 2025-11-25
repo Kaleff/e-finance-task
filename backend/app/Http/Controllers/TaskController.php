@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\IndexTaskRequest;
 use App\Http\Requests\ShowRequest;
 use App\Http\Requests\StoreTaskRequest;
+use App\Http\Requests\UpdateTaskAssigneeRequest;
 use App\Http\Requests\UpdateTaskPriorityRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Http\Requests\UpdateTaskStatusRequest;
@@ -43,39 +44,50 @@ class TaskController extends Controller
         return response()->json(['message' => 'Task created successfully'], 201);
     }
 
-    public function update(UpdateTaskRequest $request, $id)
+    public function update(UpdateTaskRequest $request)
     {
         $validated = $request->validated();
         if($validated) {
-            $task = $this->taskService->update($id, $validated);
+            $task = $this->taskService->update($validated['id'], $validated);
 
             if(!$task) {
-                return response()->json(['message' => 'Task not found'], 404);
+                return response()->json(['message' => 'Task not found']);
             }
         }
         return response()->json(['message' => 'Task updated successfully']);
     }
 
-    public function updateStatus(UpdateTaskStatusRequest $request, $id)
+    public function updateStatus(UpdateTaskStatusRequest $request)
     {
         $validated = $request->validated();
         $status = $validated['status'];
-        $task = $this->taskService->update($id, ['status' => $status]);
+        $task = $this->taskService->update($validated['id'], ['status' => $status]);
         if(!$task) {
             return response()->json(['message' => 'Task not found'], 404);
         }
         return response()->json(['message' => 'Task status updated successfully']);
     }
 
-    public function updatePriority(UpdateTaskPriorityRequest $request, $id)
+    public function updatePriority(UpdateTaskPriorityRequest $request)
     {
         $validated = $request->validated();
         $priority = $validated['priority'];
-        $task = $this->taskService->update($id, ['priority' => $priority]);
+        $task = $this->taskService->update($validated['id'], ['priority' => $priority]);
         if(!$task) {
             return response()->json(['message' => 'Task not found'], 404);
         }
         return response()->json(['message' => 'Task priority updated successfully']);
+    }
+
+    public function updateAssignee(UpdateTaskAssigneeRequest $request)
+    {
+        $validated = $request->validated();
+        $assignedTo = $validated['assigned_to'];
+        $task = $this->taskService->update($validated['id'], ['assigned_to' => $assignedTo]);
+        if(!$task) {
+            return response()->json(['message' => 'Task not found'], 404);
+        }
+        return response()->json(['message' => 'Task assignee updated successfully']);
     }
 
     public function destroy($id)

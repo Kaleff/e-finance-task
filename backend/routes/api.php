@@ -27,6 +27,7 @@ Route::prefix('tasks')->group(function () {
     Route::put('/{id}', [TaskController::class, 'update']);
     Route::patch('/{id}/status', [TaskController::class, 'updateStatus']);
     Route::patch('/{id}/priority', [TaskController::class, 'updatePriority']);
+    Route::patch('/{id}/assignee', [TaskController::class, 'updateAssignee']);
     Route::delete('/{id}', [TaskController::class, 'destroy']);
 
     Route::post('/{id}/comments', [TaskCommentController::class, 'store']);
