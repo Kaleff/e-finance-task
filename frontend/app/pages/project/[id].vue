@@ -33,25 +33,33 @@
         </div>
 
         <!-- Project Stats -->
-        <div v-if="project" class="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div v-if="project" class="mt-6 grid grid-cols-1 md:grid-cols-5 gap-4">
           <CommonInfoCard>
             <div class="text-sm text-[#1b1b18]/60 dark:text-[#EDEDEC]/60">Total Tasks</div>
             <div class="text-2xl font-medium text-[#1b1b18] dark:text-[#EDEDEC] mt-1">
-              {{ tasksPagination.total || 0 }}
+              {{ projectStats.total || 0 }}
             </div>
           </CommonInfoCard>
+
+          <CommonInfoCard>
+            <div class="text-sm text-[#1b1b18]/60 dark:text-[#EDEDEC]/60">To do:</div>
+            <div class="text-2xl font-medium text-[#1b1b18] dark:text-[#EDEDEC] mt-1">
+              {{ projectStats.todo || 0 }}
+            </div>
+          </CommonInfoCard>
+          
           
           <CommonInfoCard>
             <div class="text-sm text-[#1b1b18]/60 dark:text-[#EDEDEC]/60">Completed</div>
             <div class="text-2xl font-medium text-green-600 dark:text-green-400 mt-1">
-              {{ completedTasksCount }}
+              {{ projectStats.completed }}
             </div>
           </CommonInfoCard>
           
           <CommonInfoCard>
             <div class="text-sm text-[#1b1b18]/60 dark:text-[#EDEDEC]/60">In Progress</div>
             <div class="text-2xl font-medium text-blue-600 dark:text-blue-400 mt-1">
-              {{ inProgressTasksCount }}
+              {{ projectStats.in_progress }}
             </div>
           </CommonInfoCard>
           
@@ -264,6 +272,12 @@ const isEditMode = computed(() => route.query.mode === 'edit')
 
 const project = ref(null)
 const tasks = ref([])
+const projectStats = ref({
+  total: 0,
+  todo: 0,
+  in_progress: 0,
+  completed: 0
+})
 const tasksPagination = ref({
   current_page: 1,
   last_page: 1,
@@ -329,6 +343,14 @@ const loadProject = async () => {
       total: 0,
       from: 1,
       to: 0
+    }
+    
+    // Load stats from backend response
+    projectStats.value = response.stats || {
+      total: 0,
+      todo: 0,
+      in_progress: 0,
+      completed: 0
     }
   } catch (err) {
     error.value = err.message || 'Failed to load project'
@@ -426,23 +448,6 @@ const handleUpdateProject = async (formDataWithId) => {
     loading.value = false
   }
 }
-
-// Computed properties
-const completedTasksCount = computed(() => {
-  // If no filter applied, show from total
-  if (!statusFilter.value) {
-    return tasks.value.filter(t => t.status === 'done').length
-  }
-  return tasks.value.filter(t => t.status === 'done').length
-})
-
-const inProgressTasksCount = computed(() => {
-  // If no filter applied, show from total
-  if (!statusFilter.value) {
-    return tasks.value.filter(t => t.status === 'in_progress').length
-  }
-  return tasks.value.filter(t => t.status === 'in_progress').length
-})
 
 const isProjectOverdue = computed(() => {
   if (!project.value?.deadline) return false

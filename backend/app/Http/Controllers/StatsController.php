@@ -16,4 +16,10 @@ class StatsController extends Controller
         $stats = $this->statsService->getStats();
         return response()->json($stats);
     }
+
+    public function projectOverview()
+    {
+        $stats = $this->statsService->getProjectOverview();
+        return response()->json($stats);
+    }
 }
