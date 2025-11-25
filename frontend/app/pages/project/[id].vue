@@ -266,7 +266,7 @@ const loadProject = async () => {
       per_page: 20
     }
     
-    const response = await api.get(`/projects/${route.params.id}`, params)
+    const response = await api.get(`/project/${route.params.id}`, params)
     
     project.value = {
       id: response.id,

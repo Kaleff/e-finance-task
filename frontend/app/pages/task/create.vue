@@ -9,7 +9,7 @@
             for project: <span class="font-medium">{{ projectName }}</span>
           </p>
         </div>
-        <NuxtLink :to="projectId ? `/projects/${projectId}` : '/project/list'">
+        <NuxtLink :to="projectId ? `/project/${projectId}` : '/project/list'">
           <CommonBaseButton variant="secondary" size="sm">
             Back to Project
           </CommonBaseButton>
@@ -105,7 +105,7 @@
             >
               {{ loading ? 'Creating...' : 'Create Task' }}
             </CommonBaseButton>
-            <NuxtLink :to="projectId ? `/projects/${projectId}` : '/project/list'" class="flex-1">
+            <NuxtLink :to="projectId ? `/project/${projectId}` : '/project/list'" class="flex-1">
               <CommonBaseButton variant="secondary" class="w-full">
                 Cancel
               </CommonBaseButton>

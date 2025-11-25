@@ -52,7 +52,7 @@ export const useProjects = () => {
   const fetchProject = async (id) => {
     try {
       loading.value = true
-      const project = await api.get(`/projects/${id}`)
+      const project = await api.get(`/project/${id}`)
       currentProject.value = project
       return project
     } catch (error) {
@@ -90,7 +90,7 @@ export const useProjects = () => {
   const updateProject = async (id, projectData) => {
     try {
       loading.value = true
-      const project = await api.put(`/projects/${id}`, projectData)
+      const project = await api.put(`/project/${id}`, projectData)
       return project
     } catch (error) {
       console.error('Failed to update project:', error)
@@ -108,7 +108,7 @@ export const useProjects = () => {
   const deleteProject = async (id) => {
     try {
       loading.value = true
-      await api.delete(`/projects/${id}`)
+      await api.delete(`/project/${id}`)
     } catch (error) {
       console.error('Failed to delete project:', error)
       throw error

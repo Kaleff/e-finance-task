@@ -21,7 +21,7 @@
             </p>
           </div>
           <div class="flex gap-3">
-            <NuxtLink :to="task?.project_id ? `/projects/${task.project_id}` : '/project/list'">
+            <NuxtLink :to="task?.project_id ? `/project/${task.project_id}` : '/project/list'">
               <CommonBaseButton variant="secondary" size="sm">
                 Back to Project
               </CommonBaseButton>
