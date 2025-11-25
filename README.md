@@ -50,7 +50,7 @@ npm run dev
 ```
 8) Make sure that the project is running at [localhost](http://localhost)
 9) Access phpMyAdmin at port 8080 [phpMyAdmin](http://localhost:8080) to view databases
-10) Access front-end [Mailpit](http://127.0.0.1:3000) to view applicaton
+10) Access front-end [here](http://127.0.0.1:3000) to view applicaton
 ## Run time commands
 1) Run tests
 ```
