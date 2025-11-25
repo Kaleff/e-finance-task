@@ -23,16 +23,16 @@ cp .env.example .env
 docker compose up -d
 ```
 
-4) Run the composer installation in the project directory
-
-```
-docker run --rm -v ${PWD}:/app composer install
-```
-
-5) Navigate to the back-end repository and generate APP_KEY for .env file
+4) Navigate to the back-end repository and  Run the composer installation in the project directory, stay in back-end repository
 
 ```
 cd backend
+docker run --rm -v ${PWD}:/app composer install
+```
+
+5) Generate APP_KEY for .env file
+
+```
 ./vendor/bin/sail artisan key:generate
 ```
 
@@ -44,7 +44,7 @@ cd backend
 
 7) Navigate to the front-end and build front-end
 ```
-cd frontend
+cd ../frontend
 npm i
 npm run dev
 ```
