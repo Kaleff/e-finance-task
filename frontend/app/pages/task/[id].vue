@@ -39,7 +39,7 @@
 
         <!-- Task Management -->
         <div v-if="task" class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="bg-white dark:bg-[#0a0a0a] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm p-4">
+          <CommonInfoCard>
             <label class="block text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC] mb-2">
               Status
             </label>
@@ -52,9 +52,9 @@
                 {{ option.label }}
               </option>
             </CommonBaseSelect>
-          </div>
+          </CommonInfoCard>
 
-          <div class="bg-white dark:bg-[#0a0a0a] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm p-4">
+          <CommonInfoCard>
             <label class="block text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC] mb-2">
               Priority
             </label>
@@ -67,38 +67,38 @@
                 {{ option.label }}
               </option>
             </CommonBaseSelect>
-          </div>
+          </CommonInfoCard>
         </div>
 
         <!-- Task Stats -->
         <div v-if="task" class="mt-4 grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div class="bg-white dark:bg-[#0a0a0a] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm p-4">
+          <CommonInfoCard>
             <div class="text-sm text-[#1b1b18]/60 dark:text-[#EDEDEC]/60">Project ID</div>
             <div class="text-xl font-medium text-[#1b1b18] dark:text-[#EDEDEC] mt-1">
               {{ task.project_id }}
             </div>
-          </div>
+          </CommonInfoCard>
 
-          <div class="bg-white dark:bg-[#0a0a0a] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm p-4">
+          <CommonInfoCard>
             <div class="text-sm text-[#1b1b18]/60 dark:text-[#EDEDEC]/60">Estimated Hours</div>
             <div class="text-xl font-medium text-[#1b1b18] dark:text-[#EDEDEC] mt-1">
               {{ task.estimated_hours || 'N/A' }}
             </div>
-          </div>
+          </CommonInfoCard>
 
-          <div class="bg-white dark:bg-[#0a0a0a] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm p-4">
+          <CommonInfoCard>
             <div class="text-sm text-[#1b1b18]/60 dark:text-[#EDEDEC]/60">Comments</div>
             <div class="text-xl font-medium text-[#1b1b18] dark:text-[#EDEDEC] mt-1">
               {{ commentsPagination.total || 0 }}
             </div>
-          </div>
+          </CommonInfoCard>
 
-          <div class="bg-white dark:bg-[#0a0a0a] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm p-4">
+          <CommonInfoCard>
             <div class="text-sm text-[#1b1b18]/60 dark:text-[#EDEDEC]/60">Created</div>
             <div class="text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC] mt-1">
               {{ task.created_at ? formatDate(task.created_at) : 'N/A' }}
             </div>
-          </div>
+          </CommonInfoCard>
         </div>
       </div>
     </header>
@@ -505,7 +505,8 @@ const getStatusLabel = (status) => {
   const labels = {
     todo: 'To Do',
     in_progress: 'In Progress',
-    done: 'Done'
+    done: 'Done',
+    cancelled: 'Cancelled'
   }
   return labels[status] || status
 }

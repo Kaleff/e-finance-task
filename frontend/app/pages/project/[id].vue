@@ -31,33 +31,33 @@
 
         <!-- Project Stats -->
         <div v-if="project" class="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div class="bg-white dark:bg-[#0a0a0a] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm p-4">
+          <CommonInfoCard>
             <div class="text-sm text-[#1b1b18]/60 dark:text-[#EDEDEC]/60">Total Tasks</div>
             <div class="text-2xl font-medium text-[#1b1b18] dark:text-[#EDEDEC] mt-1">
               {{ tasksPagination.total || 0 }}
             </div>
-          </div>
+          </CommonInfoCard>
           
-          <div class="bg-white dark:bg-[#0a0a0a] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm p-4">
+          <CommonInfoCard>
             <div class="text-sm text-[#1b1b18]/60 dark:text-[#EDEDEC]/60">Completed</div>
             <div class="text-2xl font-medium text-green-600 dark:text-green-400 mt-1">
               {{ completedTasksCount }}
             </div>
-          </div>
+          </CommonInfoCard>
           
-          <div class="bg-white dark:bg-[#0a0a0a] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm p-4">
+          <CommonInfoCard>
             <div class="text-sm text-[#1b1b18]/60 dark:text-[#EDEDEC]/60">In Progress</div>
             <div class="text-2xl font-medium text-blue-600 dark:text-blue-400 mt-1">
               {{ inProgressTasksCount }}
             </div>
-          </div>
+          </CommonInfoCard>
           
-          <div class="bg-white dark:bg-[#0a0a0a] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm p-4">
+          <CommonInfoCard>
             <div class="text-sm text-[#1b1b18]/60 dark:text-[#EDEDEC]/60">Deadline</div>
             <div class="text-lg font-medium mt-1" :class="isProjectOverdue ? 'text-red-600 dark:text-red-400' : 'text-[#1b1b18] dark:text-[#EDEDEC]'">
               {{ project.deadline ? formatDate(project.deadline) : 'No deadline' }}
             </div>
-          </div>
+          </CommonInfoCard>
         </div>
       </div>
     </header>
