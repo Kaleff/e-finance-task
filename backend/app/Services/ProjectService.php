@@ -43,7 +43,7 @@ class ProjectService
             return null;
         }
 
-        $tasks = $project->tasks()->paginate($perPage);
+        $tasks = $project->tasks()->withCount('comments')->paginate($perPage);
 
         return [
             'id' => $project->id,

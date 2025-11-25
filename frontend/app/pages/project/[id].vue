@@ -120,6 +120,9 @@
                   Estimated
                 </th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-[#1b1b18]/60 dark:text-[#EDEDEC]/60 uppercase tracking-wider">
+                  Comments
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-[#1b1b18]/60 dark:text-[#EDEDEC]/60 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
@@ -151,6 +154,14 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-[#1b1b18]/60 dark:text-[#EDEDEC]/60">
                   {{ task.estimated_hours ? `${task.estimated_hours}h` : '-' }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center gap-1 text-sm text-[#1b1b18]/60 dark:text-[#EDEDEC]/60">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                    </svg>
+                    <span>{{ task.comments_count || 0 }}</span>
+                  </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                   <button
