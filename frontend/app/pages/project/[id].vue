@@ -449,34 +449,6 @@ const handleUpdateProject = async (formDataWithId) => {
   }
 }
 
-// Computed properties
-const completedTasksCount = computed(() => {
-  // Use stats from backend when no filter is applied
-  if (!statusFilter.value) {
-    return projectStats.value.completed
-  }
-  // When filtered, count from current page tasks
-  return tasks.value.filter(t => t.status === 'done').length
-})
-
-const inProgressTasksCount = computed(() => {
-  // Use stats from backend when no filter is applied
-  if (!statusFilter.value) {
-    return projectStats.value.in_progress
-  }
-  // When filtered, count from current page tasks
-  return tasks.value.filter(t => t.status === 'in_progress').length
-})
-
-const todoTasksCount = computed(() => {
-  // Use stats from backend when no filter is applied
-  if (!statusFilter.value) {
-    return projectStats.value.todo
-  }
-  // When filtered, count from current page tasks
-  return tasks.value.filter(t => t.status === 'todo').length
-})
-
 const isProjectOverdue = computed(() => {
   if (!project.value?.deadline) return false
   return new Date(project.value.deadline) < new Date() && project.value.status !== 'completed'
