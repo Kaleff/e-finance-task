@@ -17,12 +17,12 @@
     <div class="space-y-4">
       <!-- Email -->
       <CommonBaseInput
-        :modelValue="props.form.email"
-        @update:modelValue="updateField('email', $event)"
+        :model-value="props.form.email"
         type="email"
         placeholder="Email address"
         required
         :error="props.errors.email"
+        @update:model-value="updateField('email', $event)"
         @blur="emit('blur-email')"
       >
         <template #prefix>
@@ -34,12 +34,12 @@
 
       <!-- Password -->
       <CommonBaseInput
-        :modelValue="props.form.password"
-        @update:modelValue="updateField('password', $event)"
+        :model-value="props.form.password"
         type="password"
         placeholder="Password"
         required
         :error="props.errors.password"
+        @update:model-value="updateField('password', $event)"
         @blur="emit('blur-password')"
       >
         <template #prefix>
@@ -55,10 +55,10 @@
         <input
           id="remember-me"
           :checked="props.form.remember"
-          @change="updateField('remember', $event.target.checked)"
           type="checkbox"
           class="h-4 w-4 text-[#f53003] dark:text-[#FF4433] focus:ring-[#f53003] dark:focus:ring-[#FF4433] border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm"
-        />
+          @change="updateField('remember', $event.target.checked)"
+        >
         <label for="remember-me" class="ml-2 block text-sm text-[#1b1b18] dark:text-[#EDEDEC]">
           Remember me
         </label>

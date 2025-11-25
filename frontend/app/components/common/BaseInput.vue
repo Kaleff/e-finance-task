@@ -25,7 +25,7 @@
         @input="$emit('update:modelValue', $event.target.value)"
         @blur="$emit('blur', $event)"
         @focus="$emit('focus', $event)"
-      />
+      >
       
       <div v-if="$slots.suffix" class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
         <slot name="suffix" />

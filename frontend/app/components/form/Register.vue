@@ -17,13 +17,13 @@
     <div class="space-y-4">
       <!-- Name -->
       <CommonBaseInput
-        :modelValue="props.form.name"
-        @update:modelValue="updateField('name', $event)"
+        :model-value="props.form.name"
         type="text"
         label="Full Name"
         placeholder="John Doe"
         required
         :error="props.errors.name"
+        @update:model-value="updateField('name', $event)"
         @blur="emit('blur-name')"
       >
         <template #prefix>
@@ -35,13 +35,13 @@
 
       <!-- Email -->
       <CommonBaseInput
-        :modelValue="props.form.email"
-        @update:modelValue="updateField('email', $event)"
+        :model-value="props.form.email"
         type="email"
         label="Email address"
         placeholder="john@example.com"
         required
         :error="props.errors.email"
+        @update:model-value="updateField('email', $event)"
         @blur="emit('blur-email')"
       >
         <template #prefix>
@@ -53,14 +53,14 @@
 
       <!-- Password -->
       <CommonBaseInput
-        :modelValue="props.form.password"
-        @update:modelValue="updateField('password', $event)"
+        :model-value="props.form.password"
         type="password"
         label="Password"
         placeholder="••••••••"
         required
         :error="props.errors.password"
         hint="Must be at least 8 characters"
+        @update:model-value="updateField('password', $event)"
         @blur="emit('blur-password')"
       >
         <template #prefix>
@@ -72,13 +72,13 @@
 
       <!-- Password Confirmation -->
       <CommonBaseInput
-        :modelValue="props.form.password_confirmation"
-        @update:modelValue="updateField('password_confirmation', $event)"
+        :model-value="props.form.password_confirmation"
         type="password"
         label="Confirm Password"
         placeholder="••••••••"
         required
         :error="props.errors.password_confirmation"
+        @update:model-value="updateField('password_confirmation', $event)"
         @blur="emit('blur-password-confirmation')"
       >
         <template #prefix>
@@ -93,11 +93,11 @@
       <input
         id="terms"
         :checked="props.form.acceptTerms"
-        @change="updateField('acceptTerms', $event.target.checked)"
         type="checkbox"
         required
         class="h-4 w-4 text-[#f53003] dark:text-[#FF4433] focus:ring-[#f53003] dark:focus:ring-[#FF4433] border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm"
-      />
+        @change="updateField('acceptTerms', $event.target.checked)"
+      >
       <label for="terms" class="ml-2 block text-sm text-[#1b1b18] dark:text-[#EDEDEC]">
         I agree to the
         <a href="#" class="text-[#f53003] dark:text-[#FF4433] hover:text-[#d42a02] dark:hover:text-[#ff5544]">Terms and Conditions</a>

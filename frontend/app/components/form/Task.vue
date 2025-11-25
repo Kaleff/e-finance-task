@@ -8,17 +8,17 @@
             <div class="w-full px-4 py-2 border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm bg-[#FDFDFC] dark:bg-[#1b1b18]/20 text-[#1b1b18] dark:text-[#EDEDEC]">
               {{ props.projectName }}
             </div>
-            <input type="hidden" name="project_id" :value="props.projectId" />
+            <input type="hidden" name="project_id" :value="props.projectId" >
           </div>
 
           <!-- Task Title -->
           <div class="mb-6">
             <CommonBaseInput
-              :modelValue="props.form.title"
-              @update:modelValue="updateField('title', $event)"
+              :model-value="props.form.title"
               label="Task Title"
               placeholder="Enter task title"
               required
+              @update:model-value="updateField('title', $event)"
             />
           </div>
 
@@ -30,20 +30,20 @@
             <textarea
               id="description"
               :value="props.form.description"
-              @input="updateField('description', $event.target.value)"
               rows="4"
               class="w-full px-4 py-2 border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm bg-white dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] focus:outline-none focus:ring-2 focus:ring-[#f53003] dark:focus:ring-[#FF4433]"
               placeholder="Enter task description"
-            ></textarea>
+              @input="updateField('description', $event.target.value)"
+            />
           </div>
 
           <!-- Status and Priority -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
               <CommonBaseSelect
-                :modelValue="props.form.status"
-                @update:modelValue="updateField('status', $event)"
+                :model-value="props.form.status"
                 label="Status"
+                @update:model-value="updateField('status', $event)"
               >
                 <option value="todo">To Do</option>
                 <option value="in_progress">In Progress</option>
@@ -53,9 +53,9 @@
 
             <div>
               <CommonBaseSelect
-                :modelValue="props.form.priority"
-                @update:modelValue="updateField('priority', $event)"
+                :model-value="props.form.priority"
                 label="Priority"
+                @update:model-value="updateField('priority', $event)"
               >
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
@@ -67,11 +67,11 @@
           <!-- Estimated Hours -->
           <div class="mb-6">
             <CommonBaseInput
-              :modelValue="props.form.estimated_hours"
-              @update:modelValue="updateField('estimated_hours', $event)"
+              :model-value="props.form.estimated_hours"
               type="number"
               label="Estimated Hours"
               placeholder="0"
+              @update:model-value="updateField('estimated_hours', $event)"
             />
           </div>
 
@@ -81,10 +81,10 @@
               Assignee
             </label>
             <CommonBaseSelect
-              :modelValue="props.form.assigned_to"
-              @update:modelValue="updateField('assigned_to', $event)"
-              @focus="handleLoadUsers"
+              :model-value="props.form.assigned_to"
               :disabled="props.loadingUsers"
+              @update:model-value="updateField('assigned_to', $event)"
+              @focus="handleLoadUsers"
             >
               <option :value="null">Unassigned</option>
               <option v-for="user in props.users" :key="user.id" :value="user.id">
@@ -157,12 +157,6 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:form', 'submit', 'load-users'])
-
-// Create computed property for two-way binding
-const localForm = computed({
-  get: () => props.form,
-  set: (value) => emit('update:form', value)
-})
 
 // Helper to update individual fields
 const updateField = (field, value) => {

@@ -137,7 +137,7 @@ const handleRegister = async () => {
     if (error.data?.errors) {
       const apiErrors = error.data.errors
       Object.keys(apiErrors).forEach(key => {
-        if (errors.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(errors, key)) {
           errors[key] = apiErrors[key][0]
         }
       })

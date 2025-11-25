@@ -32,8 +32,8 @@
               v-if="!isEditMode"
               variant="danger" 
               size="sm" 
-              @click="showDeleteConfirm = true"
               :disabled="deleting"
+              @click="showDeleteConfirm = true"
             >
               {{ deleting ? 'Deleting...' : 'Delete Task' }}
             </CommonBaseButton>
@@ -53,8 +53,8 @@
             </label>
             <CommonBaseSelect
               v-model="selectedStatus"
-              @update:modelValue="handleStatusChange"
               :disabled="updating"
+              @update:model-value="handleStatusChange"
             >
               <option v-for="option in statusOptions" :key="option.value" :value="option.value">
                 {{ option.label }}
@@ -68,8 +68,8 @@
             </label>
             <CommonBaseSelect
               v-model="selectedPriority"
-              @update:modelValue="handlePriorityChange"
               :disabled="updating"
+              @update:model-value="handlePriorityChange"
             >
               <option v-for="option in priorityOptions" :key="option.value" :value="option.value">
                 {{ option.label }}
@@ -83,9 +83,9 @@
             </label>
             <CommonBaseSelect
               v-model="selectedAssignee"
-              @update:modelValue="handleAssigneeChange"
-              @focus="loadUsers"
               :disabled="updating || loadingUsers"
+              @update:model-value="handleAssigneeChange"
+              @focus="loadUsers"
             >
               <option :value="null">Unassigned</option>
               <option v-for="user in users" :key="user.id" :value="user.id">
@@ -131,7 +131,7 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Loading State -->
       <div v-if="loading" class="flex justify-center items-center py-12">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#f53003] dark:border-[#FF4433]"></div>
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#f53003] dark:border-[#FF4433]"/>
       </div>
 
       <!-- Error State -->
@@ -178,16 +178,16 @@
               <CommonBaseButton 
                 variant="secondary" 
                 size="sm" 
-                @click="showDeleteConfirm = false"
                 :disabled="deleting"
+                @click="showDeleteConfirm = false"
               >
                 Cancel
               </CommonBaseButton>
               <CommonBaseButton 
                 variant="danger" 
                 size="sm" 
-                @click="handleDelete"
                 :disabled="deleting"
+                @click="handleDelete"
               >
                 {{ deleting ? 'Deleting...' : 'Delete' }}
               </CommonBaseButton>
@@ -211,9 +211,9 @@
               rows="3"
               class="w-full px-4 py-2 border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-sm bg-white dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] focus:outline-none focus:ring-2 focus:ring-[#f53003] dark:focus:ring-[#FF4433]"
               placeholder="Write your comment..."
-            ></textarea>
+            />
             <div class="mt-3 flex gap-2">
-              <CommonBaseButton size="sm" @click="handleAddComment" :disabled="!newComment.trim() || addingComment">
+              <CommonBaseButton size="sm" :disabled="!newComment.trim() || addingComment" @click="handleAddComment">
                 {{ addingComment ? 'Adding...' : 'Submit Comment' }}
               </CommonBaseButton>
               <CommonBaseButton variant="secondary" size="sm" @click="showAddComment = false">
@@ -225,7 +225,7 @@
           <!-- Empty State -->
           <div v-if="!comments.length" class="text-center py-12">
             <svg class="mx-auto h-12 w-12 text-[#1b1b18]/40 dark:text-[#EDEDEC]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
             </svg>
             <h3 class="mt-2 text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC]">No comments yet</h3>
             <p class="mt-1 text-sm text-[#1b1b18]/70 dark:text-[#EDEDEC]/70">Be the first to comment on this task.</p>
@@ -268,7 +268,6 @@
                 <button
                   v-for="(page, index) in visibleCommentPages"
                   :key="`page-${index}`"
-                  @click="page !== '...' ? loadCommentsPage(page) : null"
                   :disabled="page === '...'"
                   :class="[
                     'px-3 py-1 text-sm rounded-sm transition-colors',
@@ -278,6 +277,7 @@
                         ? 'bg-[#f53003] dark:bg-[#FF4433] text-white'
                         : 'bg-white dark:bg-[#0a0a0a] border border-[#e3e3e0] dark:border-[#3E3E3A] text-[#1b1b18] dark:text-[#EDEDEC] hover:border-[#f53003] dark:hover:border-[#FF4433]'
                   ]"
+                  @click="page !== '...' ? loadCommentsPage(page) : null"
                 >
                   {{ page }}
                 </button>
@@ -513,7 +513,7 @@ const loadUsers = async () => {
   try {
     const response = await fetchUsers()
     users.value = response || []
-  } catch (err) {
+  } catch {
     uiStore.addNotification({
       type: 'error',
       message: 'Failed to load users'

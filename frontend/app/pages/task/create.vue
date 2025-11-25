@@ -97,7 +97,7 @@ const loadUsers = async () => {
   try {
     const response = await fetchUsers()
     users.value = response || []
-  } catch (err) {
+  } catch {
     uiStore.addNotification({
       type: 'error',
       message: 'Failed to load users'

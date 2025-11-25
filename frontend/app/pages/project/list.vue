@@ -66,7 +66,7 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Loading State -->
       <div v-if="loading" class="flex justify-center items-center py-12">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#f53003] dark:border-[#FF4433]"></div>
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#f53003] dark:border-[#FF4433]"/>
       </div>
 
       <!-- Error State -->
@@ -77,7 +77,7 @@
       <!-- Empty State -->
       <div v-else-if="!projects.length" class="text-center py-12">
         <svg class="mx-auto h-12 w-12 text-[#1b1b18]/40 dark:text-[#EDEDEC]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
         </svg>
         <h3 class="mt-2 text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC]">No projects found</h3>
         <p class="mt-1 text-sm text-[#1b1b18]/70 dark:text-[#EDEDEC]/70">Get started by creating a new project.</p>
@@ -117,13 +117,13 @@
           <div class="flex items-center gap-4 text-sm text-[#1b1b18]/60 dark:text-[#EDEDEC]/60 mb-4">
             <div class="flex items-center gap-1">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
               </svg>
               <span>{{ project.tasks_count || 0 }} tasks</span>
             </div>
             <div v-if="project.deadline" class="flex items-center gap-1" :class="{ 'text-red-600 dark:text-red-400': isOverdue(project) }">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
               </svg>
               <span>{{ formatDate(project.deadline) }}</span>
             </div>
@@ -139,7 +139,7 @@
               <div
                 class="bg-[#f53003] dark:bg-[#FF4433] h-2 rounded-full transition-all"
                 :style="{ width: `${getCompletionRate(project)}%` }"
-              ></div>
+              />
             </div>
           </div>
         </div>
@@ -162,7 +162,6 @@
             <button
               v-for="(page, index) in visiblePages"
               :key="`page-${index}`"
-              @click="page !== '...' ? loadPage(page) : null"
               :disabled="page === '...'"
               :class="[
                 'px-3 py-1 text-sm rounded-sm transition-colors',
@@ -172,6 +171,7 @@
                     ? 'bg-[#f53003] dark:bg-[#FF4433] text-white'
                     : 'bg-white dark:bg-[#0a0a0a] border border-[#e3e3e0] dark:border-[#3E3E3A] text-[#1b1b18] dark:text-[#EDEDEC] hover:border-[#f53003] dark:hover:border-[#FF4433]'
               ]"
+              @click="page !== '...' ? loadPage(page) : null"
             >
               {{ page }}
             </button>

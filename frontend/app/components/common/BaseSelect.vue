@@ -27,7 +27,7 @@
       <!-- Dropdown Arrow Icon -->
       <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
         <svg class="h-5 w-5 text-[#1b1b18]/60 dark:text-[#EDEDEC]/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
         </svg>
       </div>
     </div>

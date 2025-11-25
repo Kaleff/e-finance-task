@@ -168,7 +168,7 @@ export const useFilters = (initialFilters = {}) => {
     // Update route when filters change
     watch(
       debouncedFilters,
-      (newFilters) => {
+      () => {
         const query = { ...activeFilters.value }
         router.push({ query })
       },

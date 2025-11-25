@@ -13,7 +13,6 @@ export const useAuth = () => {
    * @returns {Promise} - Authentication response
    */
   const login = async (credentials) => {
-    try {
       const response = await api.post('/login', credentials)
       
       if (response.access_token) {
@@ -21,9 +20,6 @@ export const useAuth = () => {
         authStore.setUser(response.user)
         return response
       }
-    } catch (error) {
-      throw error
-    }
   }
 
   /**
@@ -32,16 +28,12 @@ export const useAuth = () => {
    * @returns {Promise} - Registration response
    */
   const register = async (userData) => {
-    try {
-      const response = await api.post('/register', userData)
+    const response = await api.post('/register', userData)
       
-      if (response.access_token) {
-        authStore.setToken(response.access_token)
-        authStore.setUser(response.user)
-        return response
-      }
-    } catch (error) {
-      throw error
+    if (response.access_token) {
+      authStore.setToken(response.access_token)
+      authStore.setUser(response.user)
+      return response
     }
   }
 
