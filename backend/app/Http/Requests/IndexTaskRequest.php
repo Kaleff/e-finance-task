@@ -27,6 +27,7 @@ class IndexTaskRequest extends FormRequest
             'assigned_to' => 'sometimes|exists:users,id',
             'project_id' => 'sometimes|exists:projects,id',
             'page' => 'sometimes|integer|min:1',
+            'per_page' => 'sometimes|integer|min:1',
         ];
     }
 }

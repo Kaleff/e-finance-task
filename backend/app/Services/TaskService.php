@@ -9,7 +9,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class TaskService
 {
-    public function getTasks($filters = [], $page = 1, $perPage = 100): LengthAwarePaginator
+    public function getTasks($filters = [], $perPage = 20): LengthAwarePaginator
     {
         $query = Task::query();
 

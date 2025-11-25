@@ -14,8 +14,8 @@ class TaskController extends Controller
     public function index(IndexTaskRequest $request)
     {
         $filters = $request->validated();
-        $page = $filters['page'] ?? 1;
-        $tasks = $this->taskService->getTasks(filters: $filters, page: $page);
+        $perPage = $filters['per_page'] ?? 20;
+        $tasks = $this->taskService->getTasks(filters: $filters, perPage: $perPage);
         return response()->json($tasks);
     }
 
