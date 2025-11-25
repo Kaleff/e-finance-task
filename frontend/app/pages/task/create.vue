@@ -125,6 +125,7 @@ definePageMeta({
 const { createTask } = useTasks()
 const router = useRouter()
 const route = useRoute()
+const uiStore = useUiStore()
 
 const form = ref({
   project_id: '',
@@ -172,9 +173,23 @@ const handleSubmit = async () => {
 
   try {
     await createTask(form.value)
+    
+    // Show success notification
+    uiStore.addNotification({
+      type: 'success',
+      message: 'Task created successfully!'
+    })
+    
+    // Redirect to project page
     router.push(`/project/${projectId.value}`)
   } catch (err) {
     error.value = err.message || 'Failed to create task'
+    
+    // Show error notification
+    uiStore.addNotification({
+      type: 'error',
+      message: err.message || 'Failed to create task'
+    })
   } finally {
     loading.value = false
   }
