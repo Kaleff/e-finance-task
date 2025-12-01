@@ -6,7 +6,15 @@
         <span class="text-sm text-[#1b1b18] dark:text-[#EDEDEC]">{{ userName }}</span>
       </div>
     </header>
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <NuxtLink to="/" class="inline-flex items-center gap-2 text-[#f53003] dark:text-[#FF4433] hover:underline text-base font-semibold">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.25L8.25 12l7.5-7.25" />
+        </svg>
+        <span>Back to Home</span>
+      </NuxtLink>
+    </div>
       <div v-if="dropLoading || loading" class="fixed inset-0 bg-transparent flex justify-center items-center z-50">
         <CommonBigSpinner />
       </div>
