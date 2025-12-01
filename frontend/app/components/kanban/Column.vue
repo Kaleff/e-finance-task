@@ -35,7 +35,6 @@ defineProps({
 const emit = defineEmits(['drop-task'])
 
 function onDrop(event, status) {
-  console.log('Dropped on status:', status)
   const task = JSON.parse(event.dataTransfer.getData('task'))
 
   if (!task) return

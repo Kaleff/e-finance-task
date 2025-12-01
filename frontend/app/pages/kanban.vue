@@ -7,8 +7,8 @@
       </div>
     </header>
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div v-if="loading" class="flex justify-center items-center py-12">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#f53003] dark:border-[#FF4433]"/>
+      <div v-if="dropLoading || loading" class="fixed inset-0 bg-transparent flex justify-center items-center z-50">
+        <CommonBigSpinner />
       </div>
       <div v-else-if="error" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-sm p-6">
         <p class="text-red-600 dark:text-red-400">{{ error }}</p>
@@ -34,6 +34,7 @@ const api = useApi()
 
 const userName = computed(() => currentUser.value?.name || 'User')
 const loading = ref(false)
+const dropLoading = ref(false)
 const error = ref(null)
 const tasks = ref({ todo: [], in_progress: [], done: [] })
 
@@ -64,17 +65,20 @@ const fetchUserTasks = async () => {
 }
 
 const handleDropTask = async ({ task, newStatus }) => {
+  dropLoading.value = true
   // Optimistically update UI
   const oldStatus = task.status
   task.status = newStatus
   try {
     await api.patch(`/tasks/${task.id}/status`, { status: newStatus })
     // Optionally refetch tasks for consistency
-    // await fetchUserTasks()
+    await fetchUserTasks()
   } catch (err) {
     // Revert on error
     task.status = oldStatus
     error.value = err.message || 'Failed to update task status'
+  } finally {
+    dropLoading.value = false
   }
 }
 </script>
