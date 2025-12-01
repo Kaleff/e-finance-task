@@ -99,4 +99,11 @@ class TaskController extends Controller
             return response()->json(['message' => 'Task not found'], 404);
         }
     }
+
+    public function getKanbanData()
+    {
+        $userId = auth('sanctum')->id();
+        $tasks = $this->taskService->getTasksForKanban($userId);
+        return response()->json($tasks);
+    }
 }
