@@ -42,6 +42,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/stats/project-overview', [StatsController::class, 'projectOverview']);
     Route::get('/stats', [StatsController::class, 'index']);
+    Route::get('/kanban', [TaskController::class, 'getKanbanData']);
 });
 
 Route::post('/login', [AuthController::class, 'login']);

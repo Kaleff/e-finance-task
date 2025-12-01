@@ -119,4 +119,11 @@ class TaskService
         }
         return null;
     }
+
+    public function getTasksForKanban($userId): array
+    {
+        $tasks = Task::where('assigned_to', $userId)->get()->groupBy('status')->toArray();
+
+        return $tasks;
+    }
 }
