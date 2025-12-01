@@ -92,6 +92,11 @@
                 View Projects
               </CommonBaseButton>
             </NuxtLink>
+            <NuxtLink to="/kanban">
+              <CommonBaseButton variant="secondary">
+                View Kanban Board
+              </CommonBaseButton>
+            </NuxtLink>
           </div>
         </div>
 
